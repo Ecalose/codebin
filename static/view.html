@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Codebin/{{code}}</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="/assets/icon.png" type="image/x-icon">
+        <link rel="stylesheet" type="text/css" href="/styles/style.css">
+        <meta property="og:title" content="Codebin">
+        <meta property="og:description" content="Paste and share code on the go!">
+        <meta property="og:image" content="/assets/icon.png">
+        <meta property="og:url" content="https://codebin.deta.dev/">
+    </head>
+    <body>
+        <div class="wrapper">
+            <header>
+                <h3>codebin</h3>
+                <div class="button-box">
+                    <button id="copy-code">
+                        <img src="/assets/copy.png" height="15" width="15">
+                    </button>
+                    <button id="fork" style="padding: 7px 10px;">
+                        <img src="/assets/git.png" height="20" width="20">
+                    </button>
+                </div>
+            </header>
+        </div>
+        <div class="container">
+            <div class="window">
+                <div class="sidebar"></div>
+                <div class="content" id="editor"></div>
+            </div>
+            <div class="bottom-bar">
+                <div class="box">
+                    <div class="left-group">
+                        <div class="group-text-item">
+                            <img src="/assets/theme.png" height="11" width="11"> 
+                            <p id="theme-mode" style="margin-left: 2px;">One Dark</p>
+                        </div>
+                    </div>
+                    <div class="right-group">
+                        <div class="group-text-item">
+                            <img src="/assets/lock.png" height="11" width="11"> 
+                            <p style="margin-left: 2px;">Readonly</p>
+                        </div>
+                        <div class="group-text-item">
+                            <p id="lang-mode"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" id="popup">
+            <div class="content">
+                <div style="color:grey">
+                    <h3 id="popup-text"></h3>
+                </div>
+            </div>
+        </div>
+        <script src="editor/ace.js"></script>
+        <script src="/editor/ext-themelist.js"></script>
+        <script src="/scripts/view.js"></script>
+        <script>showCode("{{code}}");</script>
+    </body>
+</html>
