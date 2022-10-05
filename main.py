@@ -23,11 +23,8 @@ app.add_middleware(CORSMiddleware, allow_origins=["SAMEORIGIN"])
 
 @app.get("/")
 async def index(request: Request):
+    print(pages.TemplateResponse("index.html", {"request": request}).body.decode())
     return pages.TemplateResponse("index.html", {"request": request})
-
-@app.get("/fork/{fork_id}")
-async def redirect(request: Request, fork_id: str):
-    return pages.TemplateResponse("index.html", {"request": request, "fork_id": fork_id})
 
 @app.get("/assets/{name}")
 async def file(name: str):

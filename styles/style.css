@@ -3,12 +3,6 @@
     padding: 0;
 }
 
-@media screen and (max-width: 600px) {
-    .container > textarea {
-        font-size: 10px;
-    }
-}
-    
 :root {
     --primary-color: #0d1117;
 }
@@ -132,15 +126,15 @@ header > h3 {
     justify-content: flex-start;
     align-items: center;
     margin: 5px;
-    padding: 10px;
+    padding: 8px;
     border-radius: 5px;
     cursor: pointer;
     background-color: #1c4268a2;
 }
 
 .window > .sidebar > .sidebar-item > img {
-    width: 12px;
-    height: 12px;
+    width: 15px;
+    height: 15px;
 }
 
 .window > .sidebar > .sidebar-item > input[type="text"] {
