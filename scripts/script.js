@@ -64,7 +64,7 @@ function fileNameUpdate(updatedName, id) {
         syncModeElement.style.display = "none"
         var mode = modelist.getModeForPath(updatedName).mode;
         editor.session.setMode(mode);
-        let resolvedLang = modeToLabel(mode)
+        let resolvedLang = modeToLabel(mode).toUpperCase()
         langMode.innerHTML = resolvedLang
         container[id].mode = mode
         context.mode = mode
@@ -175,6 +175,7 @@ function dropHandler(ev) {
                     sidebarItemArray.push(sidebarItem)
                     document.getElementsByClassName("sidebar")[0].appendChild(sidebarItem)
                     container[inputId] = {mode: mode, value: e.target.result, name: file.name}
+                    sidebarItem.click()
                 }
                 reader.readAsText(file);
             }
