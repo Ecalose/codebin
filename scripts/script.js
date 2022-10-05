@@ -103,7 +103,7 @@ window.onload = function() {
     urlHash = generateRandomId()
     document.getElementById("link-to-file").innerHTML = window.location.href + urlHash
     container[context.id] = {mode: context.mode, value: "", name: "untitled"}
-    let sidebarItem = generateSidebarItem(context.id, modeToLabel(context.mode), "untitled")
+    let sidebarItem = generateSidebarItem(context.id, modeToLabel(context.mode), "")
     sidebar.appendChild(sidebarItem)
     sidebarItemArray.push(sidebarItem)
     sidebarItemClick(`${context.id}-item`)
@@ -141,7 +141,7 @@ saveButton.addEventListener("click", function() {
 let newButton = document.getElementById("new")
 newButton.addEventListener("click", function() {
     let inputId = generateRandomId()
-    let sidebarItem = generateSidebarItem(inputId, "text", "untitled")
+    let sidebarItem = generateSidebarItem(inputId, "text", "")
     sidebarItemArray.push(sidebarItem)
     document.getElementsByClassName("sidebar")[0].appendChild(sidebarItem)
     editor.setValue("")
