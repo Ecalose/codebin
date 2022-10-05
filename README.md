@@ -3,7 +3,7 @@ Code sharing utility built on [Ace](https://ace.c9.io/) & [Deta](https://deta.sh
 # Features:
 - Syntax hilighing
 - Multiple themes
-- Losse hints as you type
+- Loose hints as you type
 - Auto save, file navigation and deletion
 - Drag and drop support for multiple files
 - Single session code changes auto synchronization
