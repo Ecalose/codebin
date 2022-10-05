@@ -76,17 +76,6 @@ header > h3 {
     text-align: center;
 }
 
-.container {
-    width: 100%;
-    height: calc(100% - 125px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 60px;
-    position: fixed;
-}
-
 .window {
     height: 100%;
     width: 100%;
@@ -149,6 +138,17 @@ header > h3 {
     margin-left: 3px;
     outline: none;
     text-align: left;
+}
+
+.container {
+    width: 100%;
+    height: calc(100% - 125px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 60px;
+    position: fixed;
 }
 
 .container > .bottom-bar {
@@ -224,19 +224,16 @@ header > h3 {
 }
 
 .modal > .content {
-    align-items: center;
-    justify-content: center;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    background-color: transparent;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    background-color: #1c4268a2;
+    overflow: hidden;
     margin: auto;
     padding: 10px;
-    border: none;
-    width: 80%;
-    overflow-x: auto;
-    height: auto;
-    border-radius: 10px;
+    border-radius: 20px;
 }
 
 .url-view {

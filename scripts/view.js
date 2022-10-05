@@ -85,7 +85,7 @@ copyCodeButton.addEventListener("click", function() {
     navigator.clipboard.writeText(text)
     .then(function() {
         let popupText = document.getElementById("popup-text")
-        popupText.innerHTML = "Copied to Clipboard..."
+        popupText.innerHTML = "Copied to Clipboard"
         let modal = document.getElementById("popup")
         modal.style.display = "flex"
         setTimeout(function() {

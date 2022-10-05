@@ -1,20 +1,11 @@
-var urlHash = ""
-var themeCounter = 0
 var editor = ace.edit("editor");
 var modelist = ace.require("ace/ext/modelist");
-let pop = document.getElementById("popup")
-let newButton = document.getElementById("new")
-let saveButton = document.getElementById("save")
 let langMode = document.getElementById("lang-mode")
-let popupTxt = document.getElementById("popup-text")
-let themeButton = document.getElementById("theme-mode")
-let linkToFile = document.getElementById("link-to-file")
-let defaultFilenameInput = document.getElementById("default")
 let syncModeElement = document.getElementById("sync-mode")
-let editorTextInput = document.getElementsByClassName("ace_text-input")[0]
-let context = {id: "", mode: ""}
+let sidebar = document.getElementById("master-sidebar")
 let container = {}
-let previouslyClickedItem = null
+let sidebarItemArray = []
+let context = {id: "", mode: ""}
 
 editor.setOptions({
     fontSize: "13pt",
@@ -24,13 +15,47 @@ editor.setOptions({
 });
 editor.setTheme("ace/theme/one_dark");
 
+// mode to uppercase ext
+function modeToLabel(mode) {
+    return String(mode).split("/")[2]
+}
+
+// generate random id
+function generateRandomId() {
+    return crypto.getRandomValues(new Uint32Array(1))[0].toString(16)
+}
+
 // resolve icon source
 function resolveIconSource(mode) {
     return `assets/${mode.toLowerCase()}.png`
 }
 
+// generate sidebar item
+function generateSidebarItem(id, mode, filename) {
+    let sidebarItem = document.createElement("div")
+    sidebarItem.className = "sidebar-item"
+    sidebarItem.id = `${id}-item`
+    sidebarItem.addEventListener("click", function() {
+        sidebarItemClick(sidebarItem.id)
+    })
+    let langIcon = document.createElement("img")
+    langIcon.id = `${id}-icon`
+    langIcon.src = `/assets/${mode.toLowerCase()}.png`
+    let itemInput = document.createElement("input")
+    itemInput.id = id
+    itemInput.placeholder = "untitled"
+    itemInput.type = "text"
+    itemInput.value = filename
+    itemInput.addEventListener("input", function() {
+        fileNameUpdate(itemInput.value, itemInput.id)
+    })
+    sidebarItem.appendChild(langIcon)
+    sidebarItem.appendChild(itemInput)
+    return sidebarItem
+}
+
 // mode from filename
-var nameInputTimer = null;
+let nameInputTimer = null;
 function fileNameUpdate(updatedName, id) {
     if (nameInputTimer) {
         clearTimeout(nameInputTimer)
@@ -39,7 +64,7 @@ function fileNameUpdate(updatedName, id) {
         syncModeElement.style.display = "none"
         var mode = modelist.getModeForPath(updatedName).mode;
         editor.session.setMode(mode);
-        let resolvedLang = String(mode).split("/")[2].toUpperCase()
+        let resolvedLang = modeToLabel(mode)
         langMode.innerHTML = resolvedLang
         container[id].mode = mode
         context.mode = mode
@@ -53,6 +78,7 @@ function fileNameUpdate(updatedName, id) {
 }
 
 // handle sidebar item click
+let previouslyClickedItem = null
 function sidebarItemClick(id) {
     if (previouslyClickedItem != null) {
         previouslyClickedItem.style.border = "none"
@@ -65,61 +91,27 @@ function sidebarItemClick(id) {
     context.mode = info.mode
     editor.setValue(info.value)
     editor.session.setMode(info.mode)
-    langMode.innerHTML = info.mode.split("/")[2].toUpperCase()
+    langMode.innerHTML = modeToLabel(info.mode).toUpperCase()
 }
 
 // loding tasks
+let urlHash = ""
 window.onload = function() {
-    let isForked = document.getElementById("forkinfo")
-    if (isForked.innerHTML == "") {
-        context.id = "default"
-        context.mode = "ace/mode/text"
-        editor.session.setMode(context.mode);
-        urlHash = Math.random().toString(36).substring(5, 9) + Math.random().toString(36).substring(4, 8)
-        document.getElementById("link-to-file").innerHTML = window.location.href + urlHash
-        defaultFilenameInput.value = ""
-        container[context.id] = {mode: context.mode, value: "", name: "untitled"}
-    } else {
-        fetch(`/base/${isForked.innerHTML}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data) {
-                let currentDeafult = document.getElementById("default-item")
-                currentDeafult.remove()
-                let sidebar = document.getElementsByClassName("sidebar")[0]
-                for (let key in data) {
-                    if (key == "key") {
-                        continue
-                    }
-                    let info = data[key]
-                    let item = document.createElement("div")
-                    item.className = "sidebar-item"
-                    item.id = `${key}-item`
-                    item.onclick = function() {sidebarItemClick(`${key}-item`)}
-                    let icon = document.createElement("img")
-                    let resolvedLang = String(info.mode).split("/")[2]
-                    icon.src = resolveIconSource(resolvedLang)
-                    icon.id = `${key}-icon`
-                    let nameInput = document.createElement("input")
-                    nameInput.type = "text"
-                    nameInput.placeholder = "untitled"
-                    nameInput.value = info.name
-                    nameInput.id = `${key}`
-                    nameInput.readOnly = true
-                    item.appendChild(icon)
-                    item.appendChild(nameInput)
-                    sidebar.appendChild(item)
-                    container[key] = info
-                }
-            }
-            let defaultItem = document.getElementById("default-item")
-            defaultItem.click()
-            saveButton.click()
-        })
-    }
+    context.id = "default"
+    context.mode = "ace/mode/text"
+    editor.session.setMode(context.mode);
+    urlHash = generateRandomId()
+    document.getElementById("link-to-file").innerHTML = window.location.href + urlHash
+    container[context.id] = {mode: context.mode, value: "", name: "untitled"}
+    let sidebarItem = generateSidebarItem(context.id, modeToLabel(context.mode), "untitled")
+    sidebar.appendChild(sidebarItem)
+    sidebarItemArray.push(sidebarItem)
+    sidebarItemClick(`${context.id}-item`)
 }
 
 // theme button callback
+var themeCounter = 0
+let themeButton = document.getElementById("theme-mode")
 themeButton.addEventListener("click", function() {
     var themes = ace.require("ace/ext/themelist").themes
     themes.reverse()
@@ -134,6 +126,7 @@ themeButton.addEventListener("click", function() {
 })
 
 // save button callback
+let saveButton = document.getElementById("save")
 saveButton.addEventListener("click", function() {
     syncModeElement.style.display = "none"
     fetch(`/base/${urlHash}`, {method: "POST", body: JSON.stringify(container)})
@@ -145,35 +138,23 @@ saveButton.addEventListener("click", function() {
 })
 
 // new button callback
+let newButton = document.getElementById("new")
 newButton.addEventListener("click", function() {
-    let inputId = Math.random().toString(36).substring(5, 9) + Math.random().toString(36).substring(4, 8)
-    let sidebarItem = document.createElement("div")
-    sidebarItem.className = "sidebar-item"
-    sidebarItem.id = `${inputId}-item`
-    sidebarItem.addEventListener("click", function() {
-        sidebarItemClick(sidebarItem.id)
-    })
-    let langIcon = document.createElement("img")
-    langIcon.id = `${inputId}-icon`
-    langIcon.src = `/assets/script.png`
-    let itemInput = document.createElement("input")
-    itemInput.id = inputId
-    itemInput.placeholder = "untitled"
-    itemInput.type = "text"
-    itemInput.value = ""
-    itemInput.addEventListener("input", function() {
-        fileNameUpdate(itemInput.value, itemInput.id)
-    })
-    sidebarItem.appendChild(langIcon)
-    sidebarItem.appendChild(itemInput)
+    let inputId = generateRandomId()
+    let sidebarItem = generateSidebarItem(inputId, "text", "untitled")
+    sidebarItemArray.push(sidebarItem)
     document.getElementsByClassName("sidebar")[0].appendChild(sidebarItem)
     editor.setValue("")
     context.id = inputId
     context.mode = "ace/mode/text"
     editor.session.setMode(context.mode);
-    langMode.innerHTML = context.mode.split("/")[2].toUpperCase()
-    container[inputId] = {mode: "ace/mode/text", value: "", name: "untitled"}
+    container[inputId] = {
+        mode: "ace/mode/text", 
+        value: "", 
+        name: "untitled"
+    }
     sidebarItem.click()
+    langMode.innerHTML = context.mode.split("/")[2].toUpperCase()
 })
 
 // file drop callback
@@ -181,33 +162,17 @@ function dropHandler(ev) {
     ev.preventDefault();
     if (ev.dataTransfer.items) {
         [...ev.dataTransfer.items].forEach((item, _) => {
-            let inputId = Math.random().toString(36).substring(5, 9) + Math.random().toString(36).substring(4, 8)
+            let inputId = generateRandomId()
             if (item.kind === 'file') {
                 const file = item.getAsFile();
                 var mode = modelist.getModeForPath(file.name).mode;
                 editor.session.setMode(mode);
-                let resolvedLang = mode.split("/")[2].toUpperCase()
-                langMode.innerHTML = resolvedLang
+                let resolvedLang = modeToLabel(mode)
+                langMode.innerHTML = resolvedLang.toUpperCase()
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    let sidebarItem = document.createElement("div")
-                    sidebarItem.className = "sidebar-item"
-                    sidebarItem.id = `${inputId}-item`
-                    sidebarItem.addEventListener("click", function() {
-                        sidebarItemClick(sidebarItem.id)
-                    })
-                    let langIcon = document.createElement("img")
-                    langIcon.id = `${inputId}-icon`
-                    langIcon.src = resolveIconSource(resolvedLang)
-                    let itemInput = document.createElement("input")
-                    itemInput.id = inputId
-                    itemInput.type = "text"
-                    itemInput.value = file.name
-                    itemInput.addEventListener("input", function() {
-                        fileNameUpdate(itemInput.value, itemInput.id)
-                    })
-                    sidebarItem.appendChild(langIcon)
-                    sidebarItem.appendChild(itemInput)
+                    let sidebarItem = generateSidebarItem(inputId, resolvedLang, file.name)
+                    sidebarItemArray.push(sidebarItem)
                     document.getElementsByClassName("sidebar")[0].appendChild(sidebarItem)
                     container[inputId] = {mode: mode, value: e.target.result, name: file.name}
                 }
@@ -229,22 +194,30 @@ editor.on("paste", function() {
 })
 
 // bottom bar link callback
+let linkToFile = document.getElementById("link-to-file")
 linkToFile.addEventListener("click", function() {
     saveButton.click()
     navigator.clipboard.writeText(linkToFile.innerHTML)
     let fileLinkElement = document.getElementById("link-to-file")
     fileLinkElement.style.color = "#00b0ff"
+    let popup = document.getElementById("popup")
+    popup.style.display = "flex"
     setTimeout(function() {
         fileLinkElement.style.color = "white"
-    }, 1000)
+        popup.style.display = "none"
+    }, 900)
 })
 
 // listen for edit events
-var timer = null;
+let timer = null;
+let editorTextInput = document.getElementsByClassName("ace_text-input")[0]
 editorTextInput.addEventListener("keyup", function() {
     syncModeElement.style.display = "none"
-    let filenameInput = document.getElementById(context.id)
-    container[context.id] = {mode: context.mode, value: editor.getValue(), name: filenameInput.value}
+    container[context.id] = {
+        mode: context.mode, 
+        value: editor.getValue(), 
+        name: document.getElementById(context.id).value
+    }
     if (timer) {
         clearTimeout(timer);
     }
@@ -253,17 +226,42 @@ editorTextInput.addEventListener("keyup", function() {
     }, 1000);
 })
 
-// check if delete key is pressed
+// check keydown event
 document.addEventListener("keydown", function(e) {
+
+    // if delete key pressed
     if (e.key == "Delete" && context.id != "default") {
         let sidebarItem = document.getElementById(`${context.id}-item`)
         if (sidebarItem) {
+            let index = sidebarItemArray.indexOf(sidebarItem)
+            sidebarItemArray.splice(index, 1)
             sidebarItem.remove()
             delete container[context.id]
-            context.id = "default"
-            let defaultItem = document.getElementById("default-item")
-            defaultItem.click()
             saveButton.click()
+            if (index == sidebarItemArray.length) {
+                index--
+            }
+            sidebarItemArray[index].click()
+        }
+    }
+
+    // if arrow keys pressed
+    if (e.key == "ArrowUp" || e.key == "ArrowDown") {
+        let sidebarItem = document.getElementById(`${context.id}-item`)
+        if (sidebarItem) {
+            let index = sidebarItemArray.indexOf(sidebarItem)
+            if (e.key == "ArrowUp" && index > 0) {
+                index--
+            } else if (e.key == "ArrowUp" && index == 0) {
+                index = sidebarItemArray.length - 1
+            } else if (e.key == "ArrowDown" && index == sidebarItemArray.length - 1) {
+                index = 0
+            } else if (e.key == "ArrowDown" && index < sidebarItemArray.length - 1) {
+                index++
+            } else {
+                return
+            }
+            sidebarItemArray[index].click()
         }
     }
 });

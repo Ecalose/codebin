@@ -13,7 +13,6 @@
         <meta property="og:url" content="https://codebin.deta.dev/">
     </head>
     <body>
-        <div id="forkinfo" style="display: none;">{{fork_id}}</div>
         <button id="save" style="display: none;"></button>
         <div class="wrapper">
             <header>
@@ -37,12 +36,7 @@
         </div>
         <div class="container">
             <div class="window"  ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
-                <div class="sidebar">
-                    <div class="sidebar-item" onclick="sidebarItemClick(this.id)" id="default-item">
-                        <img src="/assets/script.png" id="default-icon">
-                        <input type="text" placeholder="untitled" oninput="fileNameUpdate(this.value, this.id)" id="default">
-                    </div>
-                </div>
+                <div class="sidebar" id="master-sidebar"></div>
                 <div class="content" id="editor"></div>
             </div>
             <div class="bottom-bar">
@@ -66,6 +60,13 @@
                             <p id="lang-mode">TEXT</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" id="popup">
+            <div class="content">
+                <div style="color:grey">
+                    <h3 id="popup-text">Copied</h3>
                 </div>
             </div>
         </div>

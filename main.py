@@ -23,7 +23,6 @@ app.add_middleware(CORSMiddleware, allow_origins=["SAMEORIGIN"])
 
 @app.get("/")
 async def index(request: Request):
-    print(pages.TemplateResponse("index.html", {"request": request}).body.decode())
     return pages.TemplateResponse("index.html", {"request": request})
 
 @app.get("/assets/{name}")
@@ -63,5 +62,4 @@ async def store(request: Request, code: str):
 
         
 if __name__ == "__main__":
-    uvicorn.run(app)
-        
+    uvicorn.run("main:app", reload=True)
