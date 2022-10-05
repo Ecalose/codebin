@@ -85,7 +85,7 @@ copyCodeButton.addEventListener("click", function() {
     navigator.clipboard.writeText(text)
     .then(function() {
         let popupText = document.getElementById("popup-text")
-        popupText.innerHTML = "Copied to Clipboard!"
+        popupText.innerHTML = "Copied to Clipboard..."
         let modal = document.getElementById("popup")
         modal.style.display = "flex"
         setTimeout(function() {
@@ -107,4 +107,10 @@ themeButton.addEventListener("click", function() {
         themeCounter++
     }
     themeButton.innerHTML = themes[themeCounter].caption
+})
+
+let forkButton = document.getElementById("fork")
+forkButton.addEventListener("click", function() {
+    let container = document.getElementsByClassName("container")[0]
+    //
 })

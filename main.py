@@ -6,7 +6,7 @@ from fastapi.requests import Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, PlainTextResponse, Response
+from fastapi.responses import JSONResponse, PlainTextResponse, Response, RedirectResponse
 
 
 class ContentResponse(Response):
@@ -24,6 +24,10 @@ app.add_middleware(CORSMiddleware, allow_origins=["SAMEORIGIN"])
 @app.get("/")
 async def index(request: Request):
     return pages.TemplateResponse("index.html", {"request": request})
+
+@app.get("/fork/{fork_id}")
+async def redirect(request: Request, fork_id: str):
+    return pages.TemplateResponse("index.html", {"request": request, "fork_id": fork_id})
 
 @app.get("/assets/{name}")
 async def file(name: str):

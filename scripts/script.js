@@ -70,13 +70,53 @@ function sidebarItemClick(id) {
 
 // loding tasks
 window.onload = function() {
-    context.id = "default"
-    context.mode = "ace/mode/text"
-    editor.session.setMode(context.mode);
-    urlHash = Math.random().toString(36).substring(5, 9) + Math.random().toString(36).substring(4, 8)
-    document.getElementById("link-to-file").innerHTML = window.location.href + urlHash
-    defaultFilenameInput.value = ""
-    container[context.id] = {mode: context.mode, value: "", name: "untitled"}
+    let isForked = document.getElementById("forkinfo")
+    if (isForked.innerHTML == "") {
+        context.id = "default"
+        context.mode = "ace/mode/text"
+        editor.session.setMode(context.mode);
+        urlHash = Math.random().toString(36).substring(5, 9) + Math.random().toString(36).substring(4, 8)
+        document.getElementById("link-to-file").innerHTML = window.location.href + urlHash
+        defaultFilenameInput.value = ""
+        container[context.id] = {mode: context.mode, value: "", name: "untitled"}
+    } else {
+        fetch(`/base/${isForked.innerHTML}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                let currentDeafult = document.getElementById("default-item")
+                currentDeafult.remove()
+                let sidebar = document.getElementsByClassName("sidebar")[0]
+                for (let key in data) {
+                    if (key == "key") {
+                        continue
+                    }
+                    let info = data[key]
+                    let item = document.createElement("div")
+                    item.className = "sidebar-item"
+                    item.id = `${key}-item`
+                    item.onclick = function() {sidebarItemClick(`${key}-item`)}
+                    let icon = document.createElement("img")
+                    let resolvedLang = String(info.mode).split("/")[2]
+                    icon.src = resolveIconSource(resolvedLang)
+                    icon.id = `${key}-icon`
+                    let nameInput = document.createElement("input")
+                    nameInput.type = "text"
+                    nameInput.placeholder = "untitled"
+                    nameInput.value = info.name
+                    nameInput.id = `${key}`
+                    nameInput.readOnly = true
+                    item.appendChild(icon)
+                    item.appendChild(nameInput)
+                    sidebar.appendChild(item)
+                    container[key] = info
+                }
+            }
+            let defaultItem = document.getElementById("default-item")
+            defaultItem.click()
+            saveButton.click()
+        })
+    }
 }
 
 // theme button callback
