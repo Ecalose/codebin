@@ -167,7 +167,7 @@ saveButton.addEventListener("click", function() {
         setTimeout(function() {
             popupText.innerHTML = "Copied"
             popup.style.display = "none"
-        }, 900)
+        }, 2000)
     }
 })
 
