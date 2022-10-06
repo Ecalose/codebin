@@ -1,7 +1,7 @@
 # codebin
 Code sharing utility built on [Ace](https://ace.c9.io/) & [Deta](https://deta.sh/)
 # Features:
-- Syntax hilighing
+- Syntax hilighting
 - Multiple themes
 - Loose hints as you type
 - Auto save, file navigation and deletion
