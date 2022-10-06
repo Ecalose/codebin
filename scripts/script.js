@@ -210,19 +210,19 @@ linkToFile.addEventListener("click", function() {
 })
 
 // listen for edit events
-let timer = null;
+let autosaveTimer = null;
 let editorTextInput = document.getElementsByClassName("ace_text-input")[0]
-editorTextInput.addEventListener("keyup", function() {
+editorTextInput.addEventListener("keydown", function(e) {
     syncModeElement.style.display = "none"
     container[context.id] = {
         mode: context.mode, 
         value: editor.getValue(), 
         name: document.getElementById(context.id).value
     }
-    if (timer) {
-        clearTimeout(timer);
+    if (autosaveTimer) {
+        clearTimeout(autosaveTimer);
     }
-    timer = setTimeout(function() {
+    autosaveTimer = setTimeout(function() {
         saveButton.click()
     }, 1000);
 })

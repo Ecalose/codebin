@@ -14,8 +14,7 @@ class ContentResponse(Response):
         with open(path, "rb") as f:
             content = f.read()
         super().__init__(content=content, **kwargs)
-    
-        
+               
 app = FastAPI()
 pages = Jinja2Templates(directory="static")
 app.mount('/editor', StaticFiles(directory='editor'), name='editor')

@@ -48,7 +48,7 @@ header > .box {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    width: 50%;
+    width: auto;
     margin: 5px;
 }
 
@@ -125,7 +125,7 @@ header > .box > input[type="text"] {
     cursor: pointer;
     background-color: var(--secondary-color);
 }
-
+    
 .window > .sidebar > .item:hover {
     background-color: rgba(66, 66, 91, 0.6)
 }
@@ -161,7 +161,7 @@ header > .box > input[type="text"] {
     position: fixed;
 }
 
-.container > .bottom-bar {
+.container > .bottombar {
     bottom: 0;
     position: fixed;
     width: 100%;
@@ -172,7 +172,7 @@ header > .box > input[type="text"] {
     align-items: center;
 }
 
-.container > .bottom-bar > .box {
+.container > .bottombar > .box {
     width: 100%;
     height: 100%;
     background-color: var(--secondary-color);
@@ -183,7 +183,7 @@ header > .box > input[type="text"] {
     margin: 10px;
 }
 
-.container > .bottom-bar > .box > .left-group {
+.container > .bottombar > .box > .left-group {
     width: 30%;
     height: 100%;
     display: flex;
@@ -192,7 +192,7 @@ header > .box > input[type="text"] {
     margin-left: 2px;
 }
 
-.container > .bottom-bar > .box > .right-group {
+.container > .bottombar > .box > .right-group {
     width: max-content;
     height: 100%;
     display: flex;
@@ -214,6 +214,69 @@ header > .box > input[type="text"] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+
+@media screen and (max-width: 600px) {
+
+    .container {
+        width: calc(100% - 40px);
+    }
+
+    .window {
+        flex-direction: column;
+    }
+
+    .window > .sidebar {
+        display: flex;
+        flex-direction: row;
+        width: calc(100% - 1px);
+        height: fit-content;
+        overflow-y: hidden;
+        overflow-x: auto;
+    }
+
+    .window > .sidebar > .item {
+        width: 70px;
+        min-width: 70px;
+        height: fit-content;
+        margin: 5px;
+        padding: 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: var(--secondary-color);
+    }
+
+    .container > .bottombar {
+        left: 0;
+        margin-bottom: 20px;
+        position: fixed;
+        width: 100%;
+        height: 30px;
+        align-items: center;
+    }
+
+    .container > .bottombar > .box {
+        width: 100%;
+        height: 100%;
+        background-color: var(--secondary-color);
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        border-radius: 5px;
+        padding: 5px;
+        overflow-y: hidden;
+        overflow-x: auto;
+    }
+
+    .container > .bottombar > .box > .right-group {
+        width: auto;
+        height: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-left: 2px;
+    }
 }
 
 .ace_mobile-menu {
