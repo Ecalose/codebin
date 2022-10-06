@@ -33,7 +33,7 @@ function resolveIconSource(mode) {
 // generate sidebar item
 function generateSidebarItem(id, mode, filename) {
     let sidebarItem = document.createElement("div")
-    sidebarItem.className = "sidebar-item"
+    sidebarItem.className = "item"
     sidebarItem.id = `${id}-item`
     sidebarItem.addEventListener("click", function() {
         sidebarItemClick(sidebarItem.id)
@@ -244,6 +244,12 @@ document.addEventListener("keydown", function(e) {
             }
             sidebarItemArray[index].click()
         }
+    } else if (e.key == "Delete" && context.id == "default") {
+        let h3 = document.getElementById("popup-text")
+        h3.innerHTML = "Can't delete default file"
+        let popup = document.getElementById("popup")
+        popup.style.display = "flex"
+        setTimeout(function() {popup.style.display = "none"} , 900)
     }
 
     // if arrow keys pressed

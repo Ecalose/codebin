@@ -5,6 +5,7 @@
 
 :root {
     --primary-color: #0d1117;
+    --secondary-color: #1c42684f;
 }
 
 body {
@@ -25,7 +26,7 @@ body {
 header {
     width: 100%;
     height: 100%;
-    background-color: #1c42684f;
+    background-color: var(--secondary-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -43,7 +44,7 @@ header > h3 {
     cursor: pointer;
 }
 
-.button-box {
+header > .box {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -51,8 +52,8 @@ header > h3 {
     margin: 5px;
 }
 
-.button-box > button {
-    background-color: #1c4268a2;
+header > .box > button {
+    background-color: var(--secondary-color);
     border: none;
     color: white;
     font-size: 15px;
@@ -63,8 +64,12 @@ header > h3 {
     white-space: nowrap;
 }
 
-.button-box > input[type="text"] {
-    background-color: #1c4268a2;
+header > .box > button:hover {
+    background-color: rgb(47, 47, 103);
+}
+
+header > .box > input[type="text"] {
+    background-color: var(--secondary-color);
     width: 80px;
     border: none;
     color: white;
@@ -100,7 +105,7 @@ header > h3 {
     margin-bottom: 10px;
     border-radius: 5px;
     padding: 10px;
-    background-color: #1c42684f;
+    background-color: var(--secondary-color);
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
@@ -108,7 +113,7 @@ header > h3 {
     overflow-x: hidden;
 }
 
-.window > .sidebar > .sidebar-item {
+.window > .sidebar > .item {
     width: calc(100% - 20px);
     height: fit-content;
     display: flex;
@@ -118,15 +123,19 @@ header > h3 {
     padding: 8px;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #1c4268a2;
+    background-color: var(--secondary-color);
 }
 
-.window > .sidebar > .sidebar-item > img {
+.window > .sidebar > .item:hover {
+    background-color: rgba(66, 66, 91, 0.6)
+}
+
+.window > .sidebar > .item > img {
     width: 15px;
     height: 15px;
 }
 
-.window > .sidebar > .sidebar-item > input[type="text"] {
+.window > .sidebar > .item > input[type="text"] {
     width: 100%;
     height: 100%;
     background-color: transparent;
@@ -138,6 +147,7 @@ header > h3 {
     margin-left: 3px;
     outline: none;
     text-align: left;
+    cursor: pointer;
 }
 
 .container {
@@ -165,7 +175,7 @@ header > h3 {
 .container > .bottom-bar > .box {
     width: 100%;
     height: 100%;
-    background-color: #1c42684f;
+    background-color: var(--secondary-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -229,7 +239,7 @@ header > h3 {
     align-items: center;
     justify-content: center;
     width: fit-content;
-    background-color: #1c4268a2;
+    background-color: var(--secondary-color);
     overflow: hidden;
     margin: auto;
     padding: 10px;
