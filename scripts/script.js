@@ -6,6 +6,8 @@ let sidebar = document.getElementById("master-sidebar")
 let container = {}
 let sidebarItemArray = []
 let context = {id: "", mode: ""}
+const maxFileSize = 5242880
+let currentTotalSize = 0
 
 editor.setOptions({
     fontSize: "13pt",
@@ -18,6 +20,25 @@ editor.setTheme("ace/theme/one_dark");
 // mode to uppercase ext
 function modeToLabel(mode) {
     return String(mode).split("/")[2]
+}
+
+// check and update total size
+function updateTotalSize() {
+    const encoder = new TextEncoder();
+    let currentSize = encoder.encode(JSON.stringify(container)).length;
+    let percentage = (currentSize / maxFileSize) * 100
+    let sizeBar = document.getElementById("sizebar")
+    if (percentage > 100) {
+        sizeBar.style.backgroundColor = "#ff004ca0"
+    } else {
+        sizeBar.style.backgroundColor = "rgba(4, 113, 66, 0.632)"
+    }
+    document.getElementById("current-size").innerHTML = `${percentage.toFixed(5)}%`
+    if (currentSize > maxFileSize) {
+        return false
+    }
+    currentTotalSize = currentSize
+    return true
 }
 
 // generate random id
@@ -72,6 +93,7 @@ function fileNameUpdate(updatedName, id) {
         let icon = document.getElementById(`${id}-icon`)
         icon.src = resolveIconSource(resolvedLang)
         container[id].name = updatedName
+        updateTotalSize()
         saveButton.click()
         syncModeElement.style.display = "flex"
     }, 1000)
@@ -103,6 +125,7 @@ window.onload = function() {
     urlHash = generateRandomId()
     document.getElementById("link-to-file").innerHTML = window.location.href + urlHash
     container[context.id] = {mode: context.mode, value: "", name: "untitled"}
+    updateTotalSize()
     let sidebarItem = generateSidebarItem(context.id, modeToLabel(context.mode), "")
     sidebar.appendChild(sidebarItem)
     sidebarItemArray.push(sidebarItem)
@@ -129,12 +152,15 @@ themeButton.addEventListener("click", function() {
 let saveButton = document.getElementById("save")
 saveButton.addEventListener("click", function() {
     syncModeElement.style.display = "none"
-    fetch(`/base/${urlHash}`, {method: "POST", body: JSON.stringify(container)})
-    .then(function(response) {
-        if (response.status == 200) {
-            syncModeElement.style.display = "flex"
-        }
-    })
+    let ok = updateTotalSize()
+    if (ok) {
+        fetch(`/base/${urlHash}`, {method: "POST", body: JSON.stringify(container)})
+        .then(function(response) {
+            if (response.status == 200) {
+                syncModeElement.style.display = "flex"
+            }
+        })
+    }
 })
 
 // new button callback
@@ -153,6 +179,7 @@ newButton.addEventListener("click", function() {
         value: "", 
         name: "untitled"
     }
+    updateTotalSize()
     sidebarItem.click()
     langMode.innerHTML = context.mode.split("/")[2].toUpperCase()
 })
@@ -175,6 +202,7 @@ function dropHandler(ev) {
                     sidebarItemArray.push(sidebarItem)
                     document.getElementsByClassName("sidebar")[0].appendChild(sidebarItem)
                     container[inputId] = {mode: mode, value: e.target.result, name: file.name}
+                    updateTotalSize()
                     sidebarItem.click()
                 }
                 reader.readAsText(file);
@@ -231,25 +259,8 @@ editorTextInput.addEventListener("keydown", function(e) {
 document.addEventListener("keydown", function(e) {
 
     // if delete key pressed
-    if (e.key == "Delete" && context.id != "default") {
-        let sidebarItem = document.getElementById(`${context.id}-item`)
-        if (sidebarItem) {
-            let index = sidebarItemArray.indexOf(sidebarItem)
-            sidebarItemArray.splice(index, 1)
-            sidebarItem.remove()
-            delete container[context.id]
-            saveButton.click()
-            if (index == sidebarItemArray.length) {
-                index--
-            }
-            sidebarItemArray[index].click()
-        }
-    } else if (e.key == "Delete" && context.id == "default") {
-        let h3 = document.getElementById("popup-text")
-        h3.innerHTML = "Can't delete default file"
-        let popup = document.getElementById("popup")
-        popup.style.display = "flex"
-        setTimeout(function() {popup.style.display = "none"} , 900)
+    if (e.key == "Delete") {
+        trashButton.click()
     }
 
     // if arrow keys pressed
@@ -272,3 +283,54 @@ document.addEventListener("keydown", function(e) {
         }
     }
 });
+
+let trashButton = document.getElementById("trash")
+trashButton.addEventListener("click", function() {
+    if (context.id != "default") {
+        let sidebarItem = document.getElementById(`${context.id}-item`)
+        if (sidebarItem) {
+            let index = sidebarItemArray.indexOf(sidebarItem)
+            sidebarItemArray.splice(index, 1)
+            sidebarItem.remove()
+            delete container[context.id]
+            saveButton.click()
+            if (index == sidebarItemArray.length) {
+                index--
+            }
+            sidebarItemArray[index].click()
+        }
+    } else {
+        let h3 = document.getElementById("popup-text")
+        h3.innerHTML = "Can't delete default file"
+        let popup = document.getElementById("popup")
+        popup.style.display = "flex"
+        setTimeout(function() {popup.style.display = "none"} , 900)
+    }
+})
+
+//handle upload button
+let uploadButton = document.getElementById("upload")
+uploadButton.addEventListener("click", function() {
+    fileInput.click()
+})
+
+// handle file upload
+let fileInput = document.getElementById("files")
+fileInput.addEventListener("change", function() {
+    let file = fileInput.files[0]
+    let mode = modelist.getModeForPath(file.name).mode;
+    editor.session.setMode(mode);
+    let resolvedLang = modeToLabel(mode)
+    langMode.innerHTML = resolvedLang.toUpperCase()
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        let inputId = generateRandomId()
+        let sidebarItem = generateSidebarItem(inputId, resolvedLang, file.name)
+        sidebarItemArray.push(sidebarItem)
+        document.getElementsByClassName("sidebar")[0].appendChild(sidebarItem)
+        container[inputId] = {mode: mode, value: e.target.result, name: file.name}
+        updateTotalSize()
+        sidebarItem.click()
+    }
+    reader.readAsText(file);
+})

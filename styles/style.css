@@ -64,22 +64,31 @@ header > .box > button {
     white-space: nowrap;
 }
 
+::-webkit-file-upload-button {
+    display: none;
+}
+
+header > .box > button > input[type="file"] {
+    position: relative;
+}
+
 header > .box > button:hover {
     background-color: rgb(47, 47, 103);
 }
 
-header > .box > input[type="text"] {
-    background-color: var(--secondary-color);
-    width: 80px;
-    border: none;
-    color: white;
-    font-size: 15px;
-    padding: 10px 10px;
+header > .box > .sizebar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+    padding: 10px;
     border-radius: 5px;
-    margin: 5px;
-    outline: none;
-    text-align: center;
-}
+    background-color: rgba(4, 113, 66, 0.632);
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.823);
+} 
 
 .window {
     height: 100%;
