@@ -152,14 +152,22 @@ themeButton.addEventListener("click", function() {
 let saveButton = document.getElementById("save")
 saveButton.addEventListener("click", function() {
     syncModeElement.style.display = "none"
-    let ok = updateTotalSize()
-    if (ok) {
+    if (updateTotalSize()) {
         fetch(`/base/${urlHash}`, {method: "POST", body: JSON.stringify(container)})
         .then(function(response) {
             if (response.status == 200) {
                 syncModeElement.style.display = "flex"
             }
         })
+    } else {
+        let popup = document.getElementById("popup")
+        let popupText = document.getElementById("popup-text")
+        popupText.innerHTML = "Total size exceeded 5MB :("
+        popup.style.display = "flex"
+        setTimeout(function() {
+            popupText.innerHTML = "Copied"
+            popup.style.display = "none"
+        }, 900)
     }
 })
 
@@ -284,6 +292,7 @@ document.addEventListener("keydown", function(e) {
     }
 });
 
+// handle delete button
 let trashButton = document.getElementById("trash")
 trashButton.addEventListener("click", function() {
     if (context.id != "default") {
@@ -329,8 +338,8 @@ fileInput.addEventListener("change", function() {
         sidebarItemArray.push(sidebarItem)
         document.getElementsByClassName("sidebar")[0].appendChild(sidebarItem)
         container[inputId] = {mode: mode, value: e.target.result, name: file.name}
-        updateTotalSize()
         sidebarItem.click()
+        saveButton.click()
     }
     reader.readAsText(file);
 })
