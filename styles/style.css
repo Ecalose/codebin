@@ -45,11 +45,11 @@ header > h3 {
 }
 
 header > .box {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
     width: auto;
     margin: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 header > .box > button {
@@ -257,11 +257,12 @@ header > .box > input[type="text"] {
     }
 
     .container > .bottombar > .box {
+        left: 0;
         width: 100%;
         height: 100%;
         background-color: var(--secondary-color);
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
         border-radius: 5px;
         padding: 5px;
@@ -269,14 +270,6 @@ header > .box > input[type="text"] {
         overflow-x: auto;
     }
 
-    .container > .bottombar > .box > .right-group {
-        width: auto;
-        height: 100%;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        margin-left: 2px;
-    }
 }
 
 .ace_mobile-menu {

@@ -2,7 +2,7 @@ var container = {}
 var editor = ace.edit("editor")
 editor.setReadOnly(true)
 var langMode = document.getElementById("lang-mode")
-let sidebar = document.getElementsByClassName("sidebar")[0]
+let sidebar = document.getElementById("master-sidebar")
 let previouslyClickedItem = null
 
 editor.setOptions({
@@ -55,7 +55,7 @@ function showCode(code) {
                 }
                 let info = data[key]
                 let item = document.createElement("div")
-                item.className = "sidebar-item"
+                item.className = "item"
                 item.id = `${key}-item`
                 item.onclick = function() {sidebarItemClick(`${key}-item`)}
                 let icon = document.createElement("img")
