@@ -18,7 +18,7 @@ class ContentResponse(Response):
 app = FastAPI()
 pages = Jinja2Templates(directory="static")
 app.mount('/editor', StaticFiles(directory='editor'), name='editor')
-app.add_middleware(CORSMiddleware, allow_origins=["SAMEORIGIN"])
+app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
 @app.get("/")
 async def index(request: Request):
