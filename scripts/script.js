@@ -100,14 +100,14 @@ function fileNameUpdate(updatedName, id) {
 }
 
 // handle sidebar item click
-let previouslyClickedItem = null
+let previouslyClickedItem = null;
 function sidebarItemClick(id) {
     if (previouslyClickedItem != null) {
         previouslyClickedItem.style.border = "none"
     }
     let item = document.getElementById(id)
     previouslyClickedItem = item
-    item.style.border = "1px solid blue"
+    item.style.border = "1px solid rgb(3, 5, 247)"
     context.id = id.split("-")[0]
     let info = container[context.id]
     context.mode = info.mode
@@ -225,11 +225,6 @@ function dragOverHandler(ev) {
     ev.preventDefault();
 }
 
-// handle code paste
-editor.on("paste", function() {
-    saveButton.click()
-})
-
 // bottom bar link callback
 let linkToFile = document.getElementById("link-to-file")
 linkToFile.addEventListener("click", function() {
@@ -250,15 +245,15 @@ let autosaveTimer = null;
 let editorTextInput = document.getElementsByClassName("ace_text-input")[0]
 editorTextInput.addEventListener("keydown", function(e) {
     syncModeElement.style.display = "none"
-    container[context.id] = {
-        mode: context.mode, 
-        value: editor.getValue(), 
-        name: document.getElementById(context.id).value
-    }
     if (autosaveTimer) {
         clearTimeout(autosaveTimer);
     }
     autosaveTimer = setTimeout(function() {
+        container[context.id] = {
+            mode: context.mode, 
+            value: editor.getValue(), 
+            name: document.getElementById(context.id).value
+        }
         saveButton.click()
     }, 1000);
 })
@@ -342,4 +337,10 @@ fileInput.addEventListener("change", function() {
         saveButton.click()
     }
     reader.readAsText(file);
+})
+
+// listen right click event
+document.addEventListener("contextmenu", function(e) {
+    e.preventDefault()
+    console.log(e.target)
 })

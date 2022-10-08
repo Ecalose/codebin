@@ -39,7 +39,7 @@ header {
 header > h3 {
     margin: 10px;
     background-color: rgb(61, 61, 134);
-    padding: 8px;
+    padding: 6px 10px;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -139,7 +139,7 @@ header > .box > .sizebar {
     cursor: pointer;
     background-color: var(--secondary-color);
 }
-    
+
 .window > .sidebar > .item:hover {
     background-color: rgba(66, 66, 91, 0.6)
 }
@@ -150,7 +150,7 @@ header > .box > .sizebar {
 }
 
 .window > .sidebar > .item > input[type="text"] {
-    width: 100%;
+    width: 60px;
     height: 100%;
     background-color: transparent;
     border: none;
@@ -162,6 +162,7 @@ header > .box > .sizebar {
     outline: none;
     text-align: left;
     cursor: pointer;
+    text-overflow: ellipsis;
 }
 
 .container {
