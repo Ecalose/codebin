@@ -93,6 +93,7 @@ header > .box > .sizebar {
     cursor: pointer;
     white-space: nowrap;
     color: rgba(255, 255, 255, 0.823);
+    pointer-events: none;
 } 
 
 .window {
@@ -236,16 +237,25 @@ header > .box > .sizebar {
 
     .container {
         width: calc(100% - 40px);
+        height: calc(100% - 110px);
     }
 
     .window {
+        margin-top: 5px;
         flex-direction: column;
+        justify-content: center;
+    }
+
+    .window > .content {
+        margin: 0;
+        margin-left: 10px;
     }
 
     .window > .sidebar {
+        margin-top: 5px;
         display: flex;
         flex-direction: row;
-        width: calc(100% - 1px);
+        width: 100%;
         height: fit-content;
         overflow-y: hidden;
         overflow-x: auto;
@@ -264,22 +274,14 @@ header > .box > .sizebar {
 
     .container > .bottombar {
         left: 0;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         position: fixed;
         width: 100%;
-        height: 30px;
+        height: 20px;
         align-items: center;
     }
 
     .container > .bottombar > .box {
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: var(--secondary-color);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-radius: 5px;
         padding: 5px;
         overflow-y: hidden;
         overflow-x: auto;

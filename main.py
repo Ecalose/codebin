@@ -59,6 +59,6 @@ async def store(request: Request, code: str):
         db.put(payload, code)
         return PlainTextResponse(code)
 
-        
+
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)

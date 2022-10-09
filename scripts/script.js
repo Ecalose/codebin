@@ -338,9 +338,3 @@ fileInput.addEventListener("change", function() {
     }
     reader.readAsText(file);
 })
-
-// listen right click event
-document.addEventListener("contextmenu", function(e) {
-    e.preventDefault()
-    console.log(e.target)
-})
