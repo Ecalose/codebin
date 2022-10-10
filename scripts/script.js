@@ -177,7 +177,7 @@ newButton.addEventListener("click", function() {
     let inputId = generateRandomId()
     let sidebarItem = generateSidebarItem(inputId, "text", "")
     sidebarItemArray.push(sidebarItem)
-    document.getElementsByClassName("sidebar")[0].appendChild(sidebarItem)
+    sidebar.appendChild(sidebarItem)
     editor.setValue("")
     context.id = inputId
     context.mode = "ace/mode/text"
@@ -208,7 +208,7 @@ function dropHandler(ev) {
                 reader.onload = function(e) {
                     let sidebarItem = generateSidebarItem(inputId, resolvedLang, file.name)
                     sidebarItemArray.push(sidebarItem)
-                    document.getElementsByClassName("sidebar")[0].appendChild(sidebarItem)
+                    sidebar.appendChild(sidebarItem)
                     container[inputId] = {mode: mode, value: e.target.result, name: file.name}
                     updateTotalSize()
                     sidebarItem.click()
@@ -331,7 +331,7 @@ fileInput.addEventListener("change", function() {
         let inputId = generateRandomId()
         let sidebarItem = generateSidebarItem(inputId, resolvedLang, file.name)
         sidebarItemArray.push(sidebarItem)
-        document.getElementsByClassName("sidebar")[0].appendChild(sidebarItem)
+        sidebar.appendChild(sidebarItem)
         container[inputId] = {mode: mode, value: e.target.result, name: file.name}
         sidebarItem.click()
         saveButton.click()
