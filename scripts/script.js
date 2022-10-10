@@ -48,7 +48,7 @@ function generateRandomId() {
 
 // resolve icon source
 function resolveIconSource(mode) {
-    return `assets/${mode.toLowerCase()}.png`
+    return `lang_modes/${mode.toLowerCase()}.png`
 }
 
 // generate sidebar item
@@ -61,7 +61,7 @@ function generateSidebarItem(id, mode, filename) {
     })
     let langIcon = document.createElement("img")
     langIcon.id = `${id}-icon`
-    langIcon.src = `/assets/${mode.toLowerCase()}.png`
+    langIcon.src = resolveIconSource(mode)
     let itemInput = document.createElement("input")
     itemInput.id = id
     itemInput.placeholder = "untitled"

@@ -14,7 +14,7 @@ editor.setTheme("ace/theme/one_dark");
 
 function resolveIconSource(mode) {
     let srcName = mode.split("/")[2].toLowerCase()
-    return `assets/${srcName}.png`
+    return `lang_modes/${srcName}.png`
 }
 
 function sidebarItemClick(id) {
@@ -77,7 +77,6 @@ function showCode(code) {
         defaultItem.click()
     })
 }
-
 
 copyCodeButton = document.getElementById("copy-code")
 copyCodeButton.addEventListener("click", function() {
