@@ -3,11 +3,13 @@ var modelist = ace.require("ace/ext/modelist");
 let langMode = document.getElementById("lang-mode")
 let syncModeElement = document.getElementById("sync-mode")
 let sidebar = document.getElementById("master-sidebar")
+let popup = document.getElementById("popup")
+let popupText = document.getElementById("popup-text")
 let container = {}
 let sidebarItemArray = []
 let context = {id: "", mode: ""}
-const maxFileSize = 5242880
-let currentTotalSize = 0
+const maxFileSize = 400 * 1024
+const totalPayloadSize = 16 * 1024 * 1024
 
 editor.setOptions({
     fontSize: "13pt",
@@ -23,21 +25,27 @@ function modeToLabel(mode) {
 }
 
 // check and update total size
-function updateTotalSize() {
+function updateTotalSize(content) {
     const encoder = new TextEncoder();
-    let currentSize = encoder.encode(JSON.stringify(container)).length;
+    let currentSize = encoder.encode(JSON.stringify(content)).length;
     let percentage = (currentSize / maxFileSize) * 100
-    let sizeBar = document.getElementById("sizebar")
+    let limitBar = document.getElementById("limit-bar")
     if (percentage > 100) {
-        sizeBar.style.backgroundColor = "#ff004ca0"
+        limitBar.style.width = "100%"
+        limitBar.style.backgroundColor = "#ff004ca0"
+        popupText.innerHTML = "Single file size exceeded 400KB :("
+        popup.style.display = "flex"
+        setTimeout(function() {
+            popupText.innerHTML = "Copied"
+            popup.style.display = "none"
+        }, 1000)
     } else {
-        sizeBar.style.backgroundColor = "rgba(4, 113, 66, 0.632)"
+        limitBar.style.width = `${percentage.toFixed(5)}%`
+        limitBar.style.backgroundColor = "rgba(12, 74, 168, 0.632)"
     }
-    document.getElementById("current-size").innerHTML = `${percentage.toFixed(5)}%`
     if (currentSize > maxFileSize) {
         return false
     }
-    currentTotalSize = currentSize
     return true
 }
 
@@ -93,7 +101,6 @@ function fileNameUpdate(updatedName, id) {
         let icon = document.getElementById(`${id}-icon`)
         icon.src = resolveIconSource(resolvedLang)
         container[id].name = updatedName
-        updateTotalSize()
         saveButton.click()
         syncModeElement.style.display = "flex"
     }, 1000)
@@ -110,9 +117,9 @@ function sidebarItemClick(id) {
     item.style.border = "1px solid rgb(3, 5, 247)"
     context.id = id.split("-")[0]
     let info = container[context.id]
-    context.mode = info.mode
+    updateTotalSize(info)
+    editor.session.setMode(info.mode);
     editor.setValue(info.value)
-    editor.session.setMode(info.mode)
     langMode.innerHTML = modeToLabel(info.mode).toUpperCase()
 }
 
@@ -125,7 +132,6 @@ window.onload = function() {
     urlHash = generateRandomId()
     document.getElementById("link-to-file").innerHTML = window.location.href + urlHash
     container[context.id] = {mode: context.mode, value: "", name: "untitled"}
-    updateTotalSize()
     let sidebarItem = generateSidebarItem(context.id, modeToLabel(context.mode), "")
     sidebar.appendChild(sidebarItem)
     sidebarItemArray.push(sidebarItem)
@@ -152,7 +158,8 @@ themeButton.addEventListener("click", function() {
 let saveButton = document.getElementById("save")
 saveButton.addEventListener("click", function() {
     syncModeElement.style.display = "none"
-    if (updateTotalSize()) {
+    let encoder = new TextEncoder();
+    if (encoder.encode(JSON.stringify(container)).length < totalPayloadSize) {
         fetch(`/base/${urlHash}`, {method: "POST", body: JSON.stringify(container)})
         .then(function(response) {
             if (response.status == 200) {
@@ -160,9 +167,7 @@ saveButton.addEventListener("click", function() {
             }
         })
     } else {
-        let popup = document.getElementById("popup")
-        let popupText = document.getElementById("popup-text")
-        popupText.innerHTML = "Total size exceeded 5MB :("
+        popupText.innerHTML = "Total size exceeded 16MB :("
         popup.style.display = "flex"
         setTimeout(function() {
             popupText.innerHTML = "Copied"
@@ -187,7 +192,6 @@ newButton.addEventListener("click", function() {
         value: "", 
         name: "untitled"
     }
-    updateTotalSize()
     sidebarItem.click()
     langMode.innerHTML = context.mode.split("/")[2].toUpperCase()
 })
@@ -210,7 +214,6 @@ function dropHandler(ev) {
                     sidebarItemArray.push(sidebarItem)
                     sidebar.appendChild(sidebarItem)
                     container[inputId] = {mode: mode, value: e.target.result, name: file.name}
-                    updateTotalSize()
                     sidebarItem.click()
                 }
                 reader.readAsText(file);
@@ -232,7 +235,6 @@ linkToFile.addEventListener("click", function() {
     navigator.clipboard.writeText(linkToFile.innerHTML)
     let fileLinkElement = document.getElementById("link-to-file")
     fileLinkElement.style.color = "#00b0ff"
-    let popup = document.getElementById("popup")
     popup.style.display = "flex"
     setTimeout(function() {
         fileLinkElement.style.color = "white"
@@ -254,7 +256,9 @@ editorTextInput.addEventListener("keydown", function(e) {
             value: editor.getValue(), 
             name: document.getElementById(context.id).value
         }
-        saveButton.click()
+        if (updateTotalSize(container[context.id])) {
+            saveButton.click()
+        }
     }, 1000);
 })
 

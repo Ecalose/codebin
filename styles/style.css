@@ -82,19 +82,26 @@ header > .box > button:hover {
 }
 
 header > .box > .sizebar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 10px;
-    padding: 10px;
+    margin: 5px;
     border-radius: 5px;
-    background-color: rgba(4, 113, 66, 0.632);
-    font-size: 13px;
     cursor: pointer;
     white-space: nowrap;
-    color: rgba(255, 255, 255, 0.823);
     pointer-events: none;
-} 
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 60px;
+    height: 36px;
+    background-color: var(--secondary-color);
+    overflow: hidden;
+}
+
+header > .box > .sizebar > .limit {
+    background-color: rgba(12, 74, 168, 0.632);
+    height: 100%;
+    width: 10%;
+    border-radius: 5px;
+}
 
 .window {
     height: 100%;
@@ -200,7 +207,7 @@ header > .box > .sizebar {
 }
 
 .container > .bottombar > .box > .left-group {
-    width: 30%;
+    width: 40%;
     height: 100%;
     display: flex;
     justify-content: flex-start;
@@ -221,7 +228,7 @@ header > .box > .sizebar {
     margin: 2px;
     font-size: 11px;
     color: white;
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 5px;
     background-color: #1c4268a2;
     align-items: center;
@@ -231,7 +238,6 @@ header > .box > .sizebar {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 
 @media screen and (max-width: 600px) {
 
