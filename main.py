@@ -1,5 +1,5 @@
-import uvicorn
 import jinja2
+import uvicorn
 from deta import Deta
 from fastapi import FastAPI
 from fastapi.requests import Request
@@ -17,7 +17,6 @@ class ContentResponse(Response):
                
 app = FastAPI()
 pages = Jinja2Templates(directory="static")
-app.mount('/editor', StaticFiles(directory='editor'), name='editor')
 app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
 @app.get("/")
@@ -65,4 +64,4 @@ async def store(request: Request, code: str):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True)
+    uvicorn.run(app)

@@ -32,16 +32,19 @@ function updateTotalSize(content) {
     let limitBar = document.getElementById("limit-bar")
     if (percentage > 100) {
         limitBar.style.width = "100%"
-        limitBar.style.backgroundColor = "#ff004ca0"
+        limitBar.style.backgroundColor = "red"
         popupText.innerHTML = "Single file size exceeded 400KB :("
         popup.style.display = "flex"
         setTimeout(function() {
             popupText.innerHTML = "Copied"
             popup.style.display = "none"
         }, 1000)
+    } else if ( percentage > 60) {
+        limitBar.style.width = `${percentage}%`
+        limitBar.style.backgroundColor = "orange"
     } else {
-        limitBar.style.width = `${percentage.toFixed(5)}%`
-        limitBar.style.backgroundColor = "rgba(12, 74, 168, 0.632)"
+        limitBar.style.width = `${percentage.toFixed(2)}%`
+        limitBar.style.backgroundColor = "blue"
     }
     if (currentSize > maxFileSize) {
         return false

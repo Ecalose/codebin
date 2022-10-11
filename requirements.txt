@@ -1,4 +1,4 @@
-fastapi
-jinja2
 deta
+jinja2
+fastapi
 uvicorn
