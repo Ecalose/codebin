@@ -58,7 +58,7 @@ function generateRandomId() {
 
 // resolve icon source
 function resolveIconSource(mode) {
-    return `lang_modes/${mode.toLowerCase()}.png`
+    return `modes/${mode.toLowerCase()}.png`
 }
 
 // generate sidebar item

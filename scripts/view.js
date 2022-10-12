@@ -14,7 +14,7 @@ editor.setTheme("ace/theme/one_dark");
 
 function resolveIconSource(mode) {
     let srcName = mode.split("/")[2].toLowerCase()
-    return `lang_modes/${srcName}.png`
+    return `modes/${srcName}.png`
 }
 
 function sidebarItemClick(id) {
@@ -108,8 +108,7 @@ themeButton.addEventListener("click", function() {
     themeButton.innerHTML = themes[themeCounter].caption
 })
 
-let forkButton = document.getElementById("fork")
-forkButton.addEventListener("click", function() {
-    let container = document.getElementsByClassName("container")[0]
-    //
-})
+function renderAssets() {
+    console.log(window.location.href)
+    console.log(window.location.pathname)
+}

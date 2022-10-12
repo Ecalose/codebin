@@ -27,9 +27,9 @@ async def index(request: Request):
 async def file(name: str):
     return ContentResponse(f"./assets/{name}", media_type="application/octet-stream")
 
-@app.get("/lang_modes/{name}")
+@app.get("/modes/{name}")
 async def file(name: str):
-    return ContentResponse(f"./lang_modes/{name}", media_type="application/octet-stream")
+    return ContentResponse(f"./modes/{name}", media_type="application/octet-stream")
 
 @app.get("/scripts/{name}")
 async def file(name: str):
