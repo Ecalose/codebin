@@ -1,7 +1,0 @@
-v: 1
-icon: ./assets/icon.png
-micros:
-    - name: codebin
-      src: .
-      engine: python3.9
-      primary: true

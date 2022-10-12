@@ -43,7 +43,6 @@ async def file(name: str):
 async def view(request: Request, code: str):
     return pages.TemplateResponse("view.html", {"request": request, "code": code})
 
-
 @app.get("/base/{code}")
 async def fetch(request: Request, code: str):
     deta = Deta()
