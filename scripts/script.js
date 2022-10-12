@@ -32,19 +32,18 @@ function updateTotalSize(content) {
     let limitBar = document.getElementById("limit-bar")
     if (percentage > 100) {
         limitBar.style.width = "100%"
-        limitBar.style.backgroundColor = "red"
+        limitBar.style.backgroundColor = "rgba(208, 0, 76, 0.66)"
         popupText.innerHTML = "Single file size exceeded 400KB :("
         popup.style.display = "flex"
         setTimeout(function() {
             popupText.innerHTML = "Copied"
             popup.style.display = "none"
         }, 1000)
-    } else if ( percentage > 60) {
-        limitBar.style.width = `${percentage}%`
-        limitBar.style.backgroundColor = "orange"
+    } else if (percentage < 0.5) {
+        limitBar.style.width = "0%"
     } else {
         limitBar.style.width = `${percentage.toFixed(2)}%`
-        limitBar.style.backgroundColor = "blue"
+        limitBar.style.backgroundColor = "rgba(61, 61, 134, 0.622)"//"#1c42684f"
     }
     if (currentSize > maxFileSize) {
         return false
@@ -117,7 +116,7 @@ function sidebarItemClick(id) {
     }
     let item = document.getElementById(id)
     previouslyClickedItem = item
-    item.style.border = "1px solid rgb(3, 5, 247)"
+    item.style.border = "1px solid rgba(61, 61, 134, 0.922)"
     context.id = id.split("-")[0]
     let info = container[context.id]
     updateTotalSize(info)
