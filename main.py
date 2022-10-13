@@ -3,25 +3,23 @@ import uvicorn
 from deta import Deta
 from fastapi import FastAPI
 from fastapi.requests import Request
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, PlainTextResponse, Response, RedirectResponse
+from fastapi.responses import JSONResponse, PlainTextResponse, Response
 
 
 class ContentResponse(Response):
     def __init__(self, path: str, **kwargs):
         with open(path, "rb") as f:
             content = f.read()
-        super().__init__(content=content, **kwargs)
+            super().__init__(content=content, **kwargs)
                
 app = FastAPI()
-pages = Jinja2Templates(directory="static")
 app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
 @app.get("/")
 async def index(request: Request):
-    return pages.TemplateResponse("index.html", {"request": request})
+    return ContentResponse("./static/index.html", media_type="text/html")
 
 @app.get("/assets/{name}")
 async def file(name: str):
@@ -41,7 +39,7 @@ async def file(name: str):
 
 @app.get("/{code}")
 async def view(request: Request, code: str):
-    return pages.TemplateResponse("view.html", {"request": request, "code": code})
+    return ContentResponse("./static/view.html", media_type="text/html")
 
 @app.get("/base/{code}")
 async def fetch(request: Request, code: str):

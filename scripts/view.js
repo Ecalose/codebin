@@ -78,6 +78,13 @@ function showCode(code) {
     })
 }
 
+window.onload = function() {
+    let code = window.location.pathname.replace("/", "")
+    let title = document.getElementsByTagName("title")[0]
+    title.innerHTML = `codebin/${code}`
+    showCode(code)
+}
+
 copyCodeButton = document.getElementById("copy-code")
 copyCodeButton.addEventListener("click", function() {
     text = editor.getValue()
@@ -107,8 +114,3 @@ themeButton.addEventListener("click", function() {
     }
     themeButton.innerHTML = themes[themeCounter].caption
 })
-
-function renderAssets() {
-    console.log(window.location.href)
-    console.log(window.location.pathname)
-}
