@@ -119,18 +119,18 @@ function fileNameUpdate(updatedName, id) {
 
 // handle sidebar item click
 let previouslyClickedItem = null;
-function sidebarItemClick(id) {
-    context.id = id.split("-")[0]
+function sidebarItemClick(itemId) {
+    if (previouslyClickedItem != null) {
+        previouslyClickedItem.style.border = "none"
+    }
+    previouslyClickedItem = document.getElementById(itemId)
+    previouslyClickedItem.style.border = "1px solid rgba(61, 61, 134, 0.922)"
+    context.id = itemId.split("-")[0]
     let info = container[context.id]
     editor.session.setMode(info.mode)
     updateLangMode(info.mode)
     editor.setValue(info.value)
     updateTotalSize()
-    if (previouslyClickedItem != null) {
-        previouslyClickedItem.style.border = "none"
-    }
-    previouslyClickedItem = document.getElementById(id)
-    previouslyClickedItem.style.border = "1px solid rgba(61, 61, 134, 0.922)"
     saveButton.click()
 }
 
@@ -220,15 +220,15 @@ function dropHandler(ev) {
                 editor.session.setMode(mode);
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    let sidebarItem = generateSidebarItem(newId, modeToLabel(mode), file.name)
-                    sidebarItemArray.push(sidebarItem)
-                    sidebar.appendChild(sidebarItem)
                     container[newId] = {
                         mode: mode,
                         name: file.name, 
                         parent: urlHash,
                         value: e.target.result
                     }
+                    let sidebarItem = generateSidebarItem(newId, modeToLabel(mode), file.name)
+                    sidebarItemArray.push(sidebarItem)
+                    sidebar.appendChild(sidebarItem)
                     sidebarItem.click()
                 }
                 reader.readAsText(file);
@@ -266,12 +266,7 @@ editorTextInput.addEventListener("keydown", function(e) {
         clearTimeout(autosaveTimer);
     }
     autosaveTimer = setTimeout(function() {
-        container[context.id] = {
-            mode: context.mode, 
-            value: editor.getValue(), 
-            name: document.getElementById(context.id).value,
-            parent: urlHash
-        }
+        container[context.id].value = editor.getValue() 
         updateTotalSize()
         saveButton.click()
     }, 1000);
