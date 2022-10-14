@@ -1,9 +1,6 @@
-import jinja2
-import uvicorn
 from deta import Deta
 from fastapi import FastAPI
 from fastapi.requests import Request
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse, Response
 
@@ -69,4 +66,5 @@ async def store(request: Request, code: str):
 
 
 if __name__ == "__main__":
+    import uvicorn
     uvicorn.run(app)
