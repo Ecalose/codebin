@@ -10,7 +10,6 @@ let container = {}
 let sidebarItemArray = []
 let context = {id: "", mode: ""}
 const maxFileSize = 400 * 1024
-const totalPayloadSize = 16 * 1024 * 1024
 
 editor.setOptions({
     fontSize: "13pt",
@@ -34,12 +33,6 @@ function updateTotalSize(content) {
     if (percentage > 100) {
         limitBar.style.width = "100%"
         limitBar.style.backgroundColor = "rgba(208, 0, 76, 0.66)"
-        popupText.innerHTML = "Single file size exceeded 400KB :("
-        popup.style.display = "flex"
-        setTimeout(function() {
-            popupText.innerHTML = "Copied"
-            popup.style.display = "none"
-        }, 1000)
     } else if (percentage < 0.5) {
         limitBar.style.width = "0%"
     } else {
@@ -138,6 +131,7 @@ function sidebarItemClick(id) {
     editor.session.setMode(info.mode);
     editor.setValue(info.value)
     langMode.innerHTML = modeToLabel(info.mode).toUpperCase()
+    saveButton.click()
 }
 
 // loding tasks
@@ -178,7 +172,7 @@ saveButton.addEventListener("click", function() {
     syncModeElement.style.display = "none"
     let body = container[context.id]
     let encoder = new TextEncoder();
-    if (encoder.encode(JSON.stringify(container)).length < totalPayloadSize) {
+    if (encoder.encode(JSON.stringify(body)).length < maxFileSize) {
         fetch(`/base/${context.id}`, {method: "POST", body: JSON.stringify(body)})
         .then(function(response) {
             if (response.status == 200) {
@@ -186,10 +180,9 @@ saveButton.addEventListener("click", function() {
             }
         })
     } else {
-        popupText.innerHTML = "Total size exceeded 16MB :("
+        popupText.innerHTML = "Single filesize exceeded 400KB :("
         popup.style.display = "flex"
         setTimeout(function() {
-            popupText.innerHTML = "Copied"
             popup.style.display = "none"
         }, 2000)
     }
@@ -250,11 +243,12 @@ linkToFile.addEventListener("click", function() {
     navigator.clipboard.writeText(linkToFile.innerHTML)
     let fileLinkElement = document.getElementById("link-to-file")
     fileLinkElement.style.color = "#00b0ff"
+    popupText.innerHTML = "Copied to clipboard :)"
     popup.style.display = "flex"
     setTimeout(function() {
         fileLinkElement.style.color = "white"
         popup.style.display = "none"
-    }, 900)
+    }, 1500)
 })
 
 // listen for edit events
@@ -266,16 +260,16 @@ editorTextInput.addEventListener("keydown", function(e) {
         clearTimeout(autosaveTimer);
     }
     autosaveTimer = setTimeout(function() {
+        
         container[context.id] = {
             mode: context.mode, 
             value: editor.getValue(), 
             name: document.getElementById(context.id).value,
             parent: urlHash
         }
-        if (updateTotalSize(container[context.id])) {
-            saveButton.click()
-        }
-    }, 1000);
+        updateTotalSize(container[context.id])
+        saveButton.click()
+    }, 1500);
 })
 
 // check keydown event
@@ -350,9 +344,8 @@ fileInput.addEventListener("change", function() {
         let sidebarItem = generateSidebarItem(inputId, resolvedLang, file.name)
         sidebarItemArray.push(sidebarItem)
         sidebar.appendChild(sidebarItem)
-        container[inputId] = {mode: mode, value: e.target.result, name: file.name}
+        container[inputId] = {mode: mode, value: e.target.result, name: file.name, parent: urlHash}
         sidebarItem.click()
-        saveButton.click()
     }
     reader.readAsText(file);
 })
