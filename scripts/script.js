@@ -1,6 +1,5 @@
 var editor = ace.edit("editor");
 var modelist = ace.require("ace/ext/modelist");
-let langMode = document.getElementById("lang-mode")
 let syncModeElement = document.getElementById("sync-mode")
 let sidebar = document.getElementById("master-sidebar")
 let popup = document.getElementById("popup")
@@ -24,6 +23,12 @@ function modeToLabel(mode) {
     return String(mode).split("/")[2]
 }
 
+// upfating language mode
+function updateLangMode(aceMode) {
+    let langMode = document.getElementById("lang-mode")
+    langMode.innerHTML = modeToLabel(aceMode).toUpperCase()
+}
+
 // check and update total size
 function updateTotalSize() {
     let content = container[context.id]
@@ -40,10 +45,6 @@ function updateTotalSize() {
         limitBar.style.width = `${percentage.toFixed(2)}%`
         limitBar.style.backgroundColor = "rgba(61, 61, 134, 0.622)"
     }
-    if (currentSize > maxFileSize) {
-        return false
-    }
-    return true
 }
 
 // generate random id
@@ -104,14 +105,13 @@ function fileNameUpdate(updatedName, id) {
         syncModeElement.style.display = "none"
         var mode = modelist.getModeForPath(updatedName).mode;
         editor.session.setMode(mode);
-        let resolvedLang = modeToLabel(mode).toUpperCase()
-        langMode.innerHTML = resolvedLang
+        updateLangMode(mode)
         container[id].mode = mode
         container[id].name = updatedName
         context.mode = mode
         context.id = id
         let icon = document.getElementById(`${id}-icon`)
-        icon.src = resolveIconSource(resolvedLang)
+        icon.src = resolveIconSource(modeToLabel(mode))
         saveButton.click()
         syncModeElement.style.display = "flex"
     }, 1000)
@@ -120,22 +120,21 @@ function fileNameUpdate(updatedName, id) {
 // handle sidebar item click
 let previouslyClickedItem = null;
 function sidebarItemClick(id) {
+    context.id = id.split("-")[0]
     if (previouslyClickedItem != null) {
         previouslyClickedItem.style.border = "none"
     }
-    let item = document.getElementById(id)
-    previouslyClickedItem = item
-    item.style.border = "1px solid rgba(61, 61, 134, 0.922)"
-    context.id = id.split("-")[0]
+    previouslyClickedItem = document.getElementById(id)
+    previouslyClickedItem.style.border = "1px solid rgba(61, 61, 134, 0.922)"
     let info = container[context.id]
-    updateTotalSize()
     editor.session.setMode(info.mode);
     editor.setValue(info.value)
-    langMode.innerHTML = modeToLabel(info.mode).toUpperCase()
+    updateLangMode(info.mode)
     saveButton.click()
+    updateTotalSize()
 }
 
-// loding tasks
+// loading tasks
 let urlHash = ""
 window.onload = function() {
     context.id = generateRandomId()
@@ -171,10 +170,10 @@ themeButton.addEventListener("click", function() {
 let saveButton = document.getElementById("save")
 saveButton.addEventListener("click", function() {
     syncModeElement.style.display = "none"
-    let body = container[context.id]
+    let bodyString = JSON.stringify(container[context.id])
     let encoder = new TextEncoder();
-    if (encoder.encode(JSON.stringify(body)).length < maxFileSize) {
-        fetch(`/base/${context.id}`, {method: "POST", body: JSON.stringify(body)})
+    if (encoder.encode(bodyString).length < maxFileSize) {
+        fetch(`/base/${context.id}`, {method: "POST", body: bodyString})
         .then(function(response) {
             if (response.status == 200) {
                 syncModeElement.style.display = "flex"
@@ -214,13 +213,18 @@ function dropHandler(ev) {
                 const file = item.getAsFile();
                 var mode = modelist.getModeForPath(file.name).mode;
                 editor.session.setMode(mode);
-                let resolvedLang = modeToLabel(mode)
                 var reader = new FileReader();
-                reader.onload = function(e) {
-                    let sidebarItem = generateSidebarItem(inputId, resolvedLang, file.name)
+                reader.onloadend = function(e) {
+                    let sidebarItem = generateSidebarItem(inputId, modeToLabel(mode), file.name)
                     sidebarItemArray.push(sidebarItem)
                     sidebar.appendChild(sidebarItem)
-                    container[inputId] = {mode: mode, value: e.target.result, name: file.name, parent: urlHash}
+                    container[inputId] = {
+                    mode: mode,
+                    value: e.target.result,
+                    name: file.name, parent: urlHash
+                    }
+                    context.id = inputId
+                    context.mode = mode
                     sidebarItem.click()
                 }
                 reader.readAsText(file);
@@ -229,7 +233,7 @@ function dropHandler(ev) {
     }
 }
 
-// overrided default file drop event
+// override default drag event
 function dragOverHandler(ev) {
     ev.preventDefault();
 }
@@ -258,7 +262,6 @@ editorTextInput.addEventListener("keydown", function(e) {
         clearTimeout(autosaveTimer);
     }
     autosaveTimer = setTimeout(function() {
-        
         container[context.id] = {
             mode: context.mode, 
             value: editor.getValue(), 
@@ -267,7 +270,7 @@ editorTextInput.addEventListener("keydown", function(e) {
         }
         updateTotalSize()
         saveButton.click()
-    }, 1500);
+    }, 1000);
 })
 
 // check keydown event
@@ -334,15 +337,19 @@ fileInput.addEventListener("change", function() {
     let file = fileInput.files[0]
     let mode = modelist.getModeForPath(file.name).mode;
     editor.session.setMode(mode);
-    let resolvedLang = modeToLabel(mode)
-    langMode.innerHTML = resolvedLang.toUpperCase()
+    updateLangMode(mode)
     var reader = new FileReader();
     reader.onload = function(e) {
         let inputId = generateRandomId()
-        let sidebarItem = generateSidebarItem(inputId, resolvedLang, file.name)
+        let sidebarItem = generateSidebarItem(inputId, modeToLabel(mode), file.name)
         sidebarItemArray.push(sidebarItem)
         sidebar.appendChild(sidebarItem)
-        container[inputId] = {mode: mode, value: e.target.result, name: file.name, parent: urlHash}
+        container[inputId] = {
+            mode: mode, 
+            name: file.name, 
+            parent: urlHash,
+            value: e.target.result
+        }
         sidebarItem.click()
     }
     reader.readAsText(file);
