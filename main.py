@@ -64,6 +64,11 @@ async def store(request: Request, code: str):
     app.db.put(await request.json(), code)
     return PlainTextResponse(code)
 
+@app.delete("/base/{code}")
+async def delete(request: Request, code: str):
+    app.db.delete(code)
+    return PlainTextResponse("done!")
+
 
 if __name__ == "__main__":
     import uvicorn

@@ -227,7 +227,6 @@ function dropHandler(ev) {
                 reader.readAsText(file);
             }
         })
-        saveButton.click();
     }
 }
 
@@ -309,10 +308,10 @@ trashButton.addEventListener("click", function() {
             sidebarItemArray.splice(index, 1)
             sidebarItem.remove()
             delete container[context.id]
-            saveButton.click()
             if (index == sidebarItemArray.length) {
                 index--
             }
+            fetch(`/base/${context.id}`, {method: "DELETE"})
             sidebarItemArray[index].click()
         }
     } else {
