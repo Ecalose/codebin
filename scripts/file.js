@@ -32,7 +32,7 @@ function sidebarItemClick(id) {
 }
 
 function showCode(code) {
-    fetch(`/base/${code}`)
+    fetch(`/base/file/${code}`)
     .then(function(response) {
         if (response.status == 200) {
             return response.json()
@@ -44,7 +44,7 @@ function showCode(code) {
             setTimeout(function() {
                 modal.style.display = "none"
                 window.location.href = "/"
-            }, 900)
+            }, 3000)
         }
     })
     .then(function(data) {
@@ -77,9 +77,9 @@ function showCode(code) {
 }
 
 window.onload = function() {
-    let code = window.location.pathname.replace("/", "")
+    let code = window.location.pathname.split("/")[2]
     let title = document.getElementsByTagName("title")[0]
-    title.innerHTML = `codebin/${code}`
+    title.innerHTML = `file/${code}`
     showCode(code)
 }
 

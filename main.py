@@ -15,6 +15,7 @@ class ContentResponse(Response):
             super().__init__(content=content, **kwargs)
                
 app = FastAPI()
+app.deta = Deta()
 app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
 @app.get("/")
@@ -41,14 +42,29 @@ async def file(name: str):
 async def view(request: Request, code: str):
     return ContentResponse("./static/view.html", media_type="text/html")
 
+@app.get("/file/{code}")
+async def file(request: Request, code: str):
+    return ContentResponse("./static/file.html", media_type="text/html")
+
+@app.get("/base/file/{code}")
+async def fetch(request: Request, code: str):
+    deta = Deta()
+    db = deta.Base("codebin")
+    fetched = db.get(code)
+    if not fetched:
+        return PlainTextResponse("File not found!", status_code=404)
+    payload = {fetched["parent"]: fetched}
+    return JSONResponse(payload)
+
 @app.get("/base/{code}")
 async def fetch(request: Request, code: str):
     deta = Deta()
     db = deta.Base("codebin")
-    item = db.get(code)
-    if item is None:
-        return JSONResponse({"error": "File not found!"}, status_code=404)
-    return JSONResponse(item)
+    fetched = db.fetch({"parent": code})
+    if not fetched:
+        return PlainTextResponse("File not found!", status_code=404)
+    payload = {item.pop("key"): item for item in fetched.items}
+    return JSONResponse(payload)
 
 @app.post("/base/{code}")
 async def store(request: Request, code: str):

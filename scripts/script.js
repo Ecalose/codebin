@@ -5,6 +5,7 @@ let syncModeElement = document.getElementById("sync-mode")
 let sidebar = document.getElementById("master-sidebar")
 let popup = document.getElementById("popup")
 let popupText = document.getElementById("popup-text")
+let defaultId = null;
 let container = {}
 let sidebarItemArray = []
 let context = {id: "", mode: ""}
@@ -43,7 +44,7 @@ function updateTotalSize(content) {
         limitBar.style.width = "0%"
     } else {
         limitBar.style.width = `${percentage.toFixed(2)}%`
-        limitBar.style.backgroundColor = "rgba(61, 61, 134, 0.622)"//"#1c42684f"
+        limitBar.style.backgroundColor = "rgba(61, 61, 134, 0.622)"
     }
     if (currentSize > maxFileSize) {
         return false
@@ -98,11 +99,11 @@ function fileNameUpdate(updatedName, id) {
         let resolvedLang = modeToLabel(mode).toUpperCase()
         langMode.innerHTML = resolvedLang
         container[id].mode = mode
+        container[id].name = updatedName
         context.mode = mode
         context.id = id
         let icon = document.getElementById(`${id}-icon`)
         icon.src = resolveIconSource(resolvedLang)
-        container[id].name = updatedName
         saveButton.click()
         syncModeElement.style.display = "flex"
     }, 1000)
@@ -128,12 +129,13 @@ function sidebarItemClick(id) {
 // loding tasks
 let urlHash = ""
 window.onload = function() {
-    context.id = "default"
+    context.id = generateRandomId()
+    defaultId = context.id
     context.mode = "ace/mode/text"
     editor.session.setMode(context.mode);
     urlHash = generateRandomId()
     document.getElementById("link-to-file").innerHTML = window.location.href + urlHash
-    container[context.id] = {mode: context.mode, value: "", name: "untitled"}
+    container[context.id] = {mode: context.mode, value: "", name: "untitled", parent: urlHash}
     let sidebarItem = generateSidebarItem(context.id, modeToLabel(context.mode), "")
     sidebar.appendChild(sidebarItem)
     sidebarItemArray.push(sidebarItem)
@@ -160,9 +162,10 @@ themeButton.addEventListener("click", function() {
 let saveButton = document.getElementById("save")
 saveButton.addEventListener("click", function() {
     syncModeElement.style.display = "none"
+    let body = container[context.id]
     let encoder = new TextEncoder();
     if (encoder.encode(JSON.stringify(container)).length < totalPayloadSize) {
-        fetch(`/base/${urlHash}`, {method: "POST", body: JSON.stringify(container)})
+        fetch(`/base/${context.id}`, {method: "POST", body: JSON.stringify(body)})
         .then(function(response) {
             if (response.status == 200) {
                 syncModeElement.style.display = "flex"
@@ -189,11 +192,7 @@ newButton.addEventListener("click", function() {
     context.id = inputId
     context.mode = "ace/mode/text"
     editor.session.setMode(context.mode);
-    container[inputId] = {
-        mode: "ace/mode/text", 
-        value: "", 
-        name: "untitled"
-    }
+    container[inputId] = {mode: "ace/mode/text", value: "", name: "untitled", parent: urlHash}
     sidebarItem.click()
     langMode.innerHTML = context.mode.split("/")[2].toUpperCase()
 })
@@ -215,7 +214,7 @@ function dropHandler(ev) {
                     let sidebarItem = generateSidebarItem(inputId, resolvedLang, file.name)
                     sidebarItemArray.push(sidebarItem)
                     sidebar.appendChild(sidebarItem)
-                    container[inputId] = {mode: mode, value: e.target.result, name: file.name}
+                    container[inputId] = {mode: mode, value: e.target.result, name: file.name, parent: urlHash}
                     sidebarItem.click()
                 }
                 reader.readAsText(file);
@@ -256,7 +255,8 @@ editorTextInput.addEventListener("keydown", function(e) {
         container[context.id] = {
             mode: context.mode, 
             value: editor.getValue(), 
-            name: document.getElementById(context.id).value
+            name: document.getElementById(context.id).value,
+            parent: urlHash
         }
         if (updateTotalSize(container[context.id])) {
             saveButton.click()
@@ -266,12 +266,10 @@ editorTextInput.addEventListener("keydown", function(e) {
 
 // check keydown event
 document.addEventListener("keydown", function(e) {
-
     // if delete key pressed
     if (e.key == "Delete") {
         trashButton.click()
     }
-
     // if arrow keys pressed
     if (e.key == "ArrowUp" || e.key == "ArrowDown") {
         let sidebarItem = document.getElementById(`${context.id}-item`)
@@ -296,7 +294,7 @@ document.addEventListener("keydown", function(e) {
 // handle delete button
 let trashButton = document.getElementById("trash")
 trashButton.addEventListener("click", function() {
-    if (context.id != "default") {
+    if (context.id != defaultId) {
         let sidebarItem = document.getElementById(`${context.id}-item`)
         if (sidebarItem) {
             let index = sidebarItemArray.indexOf(sidebarItem)
