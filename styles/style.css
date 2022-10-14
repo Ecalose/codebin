@@ -169,6 +169,7 @@ header > .box > button:hover {
     height: 15px;
 }
 
+
 .window > .sidebar > .item > input[type="text"] {
     width: calc(100% - 20px);
     height: 100%;

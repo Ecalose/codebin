@@ -81,8 +81,22 @@ function generateSidebarItem(id, mode, filename) {
     itemInput.addEventListener("input", function() {
         fileNameUpdate(itemInput.value, itemInput.id)
     })
+    let icon = document.createElement("img")
+    icon.width = "10"
+    icon.height = "10"
+    icon.id = `${id}-share`
+    icon.src = "/assets/link.png"
+    icon.addEventListener("click", function() {
+        navigator.clipboard.writeText(`${window.location.href}file/${id}`)
+        popupText.innerHTML = "Copied"
+        popup.style.display = "flex"
+        setTimeout(function() {
+            popup.style.display = "none"
+        }, 1000)
+    })
     sidebarItem.appendChild(langIcon)
     sidebarItem.appendChild(itemInput)
+    sidebarItem.appendChild(icon)
     return sidebarItem
 }
 
