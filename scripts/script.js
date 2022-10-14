@@ -7,7 +7,7 @@ let popupText = document.getElementById("popup-text")
 let defaultId = null;
 let container = {}
 let sidebarItemArray = []
-let context = {id: "", mode: ""}
+let context = {id: null, mode: null}
 const maxFileSize = 400 * 1024
 
 editor.setOptions({
@@ -23,7 +23,7 @@ function modeToLabel(mode) {
     return String(mode).split("/")[2]
 }
 
-// upfating language mode
+// updating language mode
 function updateLangMode(aceMode) {
     let langMode = document.getElementById("lang-mode")
     langMode.innerHTML = modeToLabel(aceMode).toUpperCase()
@@ -54,7 +54,7 @@ function generateRandomId() {
 
 // resolve icon source
 function resolveIconSource(mode) {
-    return `modes/${mode.toLowerCase()}.png`
+    return `/modes/${mode.toLowerCase()}.png`
 }
 
 // generate sidebar item
@@ -63,7 +63,7 @@ function generateSidebarItem(id, mode, filename) {
     sidebarItem.className = "item"
     sidebarItem.id = `${id}-item`
     sidebarItem.addEventListener("click", function() {
-        sidebarItemClick(sidebarItem.id)
+        sidebarItemClick(`${id}-item`)
     })
     let langIcon = document.createElement("img")
     langIcon.id = `${id}-icon`
@@ -121,17 +121,17 @@ function fileNameUpdate(updatedName, id) {
 let previouslyClickedItem = null;
 function sidebarItemClick(id) {
     context.id = id.split("-")[0]
+    let info = container[context.id]
+    editor.session.setMode(info.mode)
+    updateLangMode(info.mode)
+    editor.setValue(info.value)
+    updateTotalSize()
     if (previouslyClickedItem != null) {
         previouslyClickedItem.style.border = "none"
     }
     previouslyClickedItem = document.getElementById(id)
     previouslyClickedItem.style.border = "1px solid rgba(61, 61, 134, 0.922)"
-    let info = container[context.id]
-    editor.session.setMode(info.mode);
-    editor.setValue(info.value)
-    updateLangMode(info.mode)
     saveButton.click()
-    updateTotalSize()
 }
 
 // loading tasks
@@ -199,7 +199,12 @@ newButton.addEventListener("click", function() {
     context.id = inputId
     context.mode = "ace/mode/text"
     editor.session.setMode(context.mode);
-    container[inputId] = {mode: "ace/mode/text", value: "", name: "untitled", parent: urlHash}
+    container[inputId] = {
+        mode: "ace/mode/text", 
+        value: "", 
+        name: "untitled", 
+        parent: urlHash
+    }
     sidebarItem.click()
 })
 
@@ -208,23 +213,22 @@ function dropHandler(ev) {
     ev.preventDefault();
     if (ev.dataTransfer.items) {
         [...ev.dataTransfer.items].forEach((item, _) => {
-            let inputId = generateRandomId()
+            let newId = generateRandomId()
             if (item.kind === 'file') {
                 const file = item.getAsFile();
                 var mode = modelist.getModeForPath(file.name).mode;
                 editor.session.setMode(mode);
                 var reader = new FileReader();
-                reader.onloadend = function(e) {
-                    let sidebarItem = generateSidebarItem(inputId, modeToLabel(mode), file.name)
+                reader.onload = function(e) {
+                    let sidebarItem = generateSidebarItem(newId, modeToLabel(mode), file.name)
                     sidebarItemArray.push(sidebarItem)
                     sidebar.appendChild(sidebarItem)
-                    container[inputId] = {
-                    mode: mode,
-                    value: e.target.result,
-                    name: file.name, parent: urlHash
+                    container[newId] = {
+                        mode: mode,
+                        name: file.name, 
+                        parent: urlHash,
+                        value: e.target.result
                     }
-                    context.id = inputId
-                    context.mode = mode
                     sidebarItem.click()
                 }
                 reader.readAsText(file);
@@ -325,26 +329,20 @@ trashButton.addEventListener("click", function() {
     }
 })
 
-//handle upload button
-let uploadButton = document.getElementById("upload")
-uploadButton.addEventListener("click", function() {
-    fileInput.click()
-})
-
 // handle file upload
-let fileInput = document.getElementById("files")
-fileInput.addEventListener("change", function() {
-    let file = fileInput.files[0]
+let filesElement = document.getElementById("files")
+filesElement.addEventListener("change", function() {
+    let file = filesElement.files[0]
     let mode = modelist.getModeForPath(file.name).mode;
     editor.session.setMode(mode);
     updateLangMode(mode)
     var reader = new FileReader();
     reader.onload = function(e) {
-        let inputId = generateRandomId()
-        let sidebarItem = generateSidebarItem(inputId, modeToLabel(mode), file.name)
+        let newId = generateRandomId()
+        let sidebarItem = generateSidebarItem(newId, modeToLabel(mode), file.name)
         sidebarItemArray.push(sidebarItem)
         sidebar.appendChild(sidebarItem)
-        container[inputId] = {
+        container[newId] = {
             mode: mode, 
             name: file.name, 
             parent: urlHash,
@@ -353,4 +351,10 @@ fileInput.addEventListener("change", function() {
         sidebarItem.click()
     }
     reader.readAsText(file);
+})
+
+//handle upload button
+let uploadButton = document.getElementById("upload")
+uploadButton.addEventListener("click", function() {
+    filesElement.click()
 })
