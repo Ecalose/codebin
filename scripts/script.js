@@ -25,7 +25,8 @@ function modeToLabel(mode) {
 }
 
 // check and update total size
-function updateTotalSize(content) {
+function updateTotalSize() {
+    let content = container[context.id]
     const encoder = new TextEncoder();
     let currentSize = encoder.encode(JSON.stringify(content)).length;
     let percentage = (currentSize / maxFileSize) * 100
@@ -127,7 +128,7 @@ function sidebarItemClick(id) {
     item.style.border = "1px solid rgba(61, 61, 134, 0.922)"
     context.id = id.split("-")[0]
     let info = container[context.id]
-    updateTotalSize(info)
+    updateTotalSize()
     editor.session.setMode(info.mode);
     editor.setValue(info.value)
     langMode.innerHTML = modeToLabel(info.mode).toUpperCase()
@@ -201,7 +202,6 @@ newButton.addEventListener("click", function() {
     editor.session.setMode(context.mode);
     container[inputId] = {mode: "ace/mode/text", value: "", name: "untitled", parent: urlHash}
     sidebarItem.click()
-    langMode.innerHTML = context.mode.split("/")[2].toUpperCase()
 })
 
 // file drop callback
@@ -215,7 +215,6 @@ function dropHandler(ev) {
                 var mode = modelist.getModeForPath(file.name).mode;
                 editor.session.setMode(mode);
                 let resolvedLang = modeToLabel(mode)
-                langMode.innerHTML = resolvedLang.toUpperCase()
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     let sidebarItem = generateSidebarItem(inputId, resolvedLang, file.name)
@@ -266,7 +265,7 @@ editorTextInput.addEventListener("keydown", function(e) {
             name: document.getElementById(context.id).value,
             parent: urlHash
         }
-        updateTotalSize(container[context.id])
+        updateTotalSize()
         saveButton.click()
     }, 1500);
 })
