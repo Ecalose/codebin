@@ -127,6 +127,7 @@ function sidebarItemClick(itemId) {
     previouslyClickedItem.style.border = "1px solid rgba(61, 61, 134, 0.922)"
     context.id = itemId.split("-")[0]
     let info = container[context.id]
+    context.mode = info.mode
     editor.session.setMode(info.mode)
     updateLangMode(info.mode)
     editor.setValue(info.value)
@@ -137,17 +138,21 @@ function sidebarItemClick(itemId) {
 // loading tasks
 let urlHash = ""
 window.onload = function() {
-    context.id = generateRandomId()
-    defaultId = context.id
-    context.mode = "ace/mode/text"
-    editor.session.setMode(context.mode);
     urlHash = generateRandomId()
+    context.id = generateRandomId()
+    context.mode = "ace/mode/text"
+    defaultId = context.id
     document.getElementById("link-to-file").innerHTML = window.location.href + urlHash
-    container[context.id] = {mode: context.mode, value: "", name: "untitled", parent: urlHash}
+    container[context.id] = {
+        mode: context.mode, 
+        value: "", 
+        name: "untitled", 
+        parent: urlHash
+    }
     let sidebarItem = generateSidebarItem(context.id, modeToLabel(context.mode), "")
     sidebar.appendChild(sidebarItem)
     sidebarItemArray.push(sidebarItem)
-    sidebarItemClick(`${context.id}-item`)
+    sidebarItem.click()
 }
 
 // theme button callback
@@ -195,10 +200,6 @@ newButton.addEventListener("click", function() {
     let sidebarItem = generateSidebarItem(inputId, "text", "")
     sidebarItemArray.push(sidebarItem)
     sidebar.appendChild(sidebarItem)
-    editor.setValue("")
-    context.id = inputId
-    context.mode = "ace/mode/text"
-    editor.session.setMode(context.mode);
     container[inputId] = {
         mode: "ace/mode/text", 
         value: "", 
@@ -213,13 +214,12 @@ function dropHandler(ev) {
     ev.preventDefault();
     if (ev.dataTransfer.items) {
         [...ev.dataTransfer.items].forEach((item, _) => {
-            let newId = generateRandomId()
             if (item.kind === 'file') {
                 const file = item.getAsFile();
-                var mode = modelist.getModeForPath(file.name).mode;
-                editor.session.setMode(mode);
                 var reader = new FileReader();
                 reader.onload = function(e) {
+                    let newId = generateRandomId()
+                    let mode = modelist.getModeForPath(file.name).mode;
                     container[newId] = {
                         mode: mode,
                         name: file.name, 
