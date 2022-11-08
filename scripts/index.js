@@ -9,6 +9,7 @@ let container = {}
 let sidebarItemArray = []
 let context = {id: null, mode: null}
 const maxFileSize = 400 * 1024
+const primaryBlue = "#1c4ce4"
 
 editor.setOptions({
     fontSize: "13pt",
@@ -76,11 +77,8 @@ function generateSidebarItem(id, mode, filename) {
     itemInput.addEventListener("input", function() {
         fileNameUpdate(itemInput.value, itemInput.id)
     })
-    let icon = document.createElement("img")
-    icon.width = "10"
-    icon.height = "10"
-    icon.id = `${id}-share`
-    icon.src = "/assets/link.png"
+    let icon = document.createElement("i")
+    icon.className = "fa-solid fa-arrow-up-right-from-square"
     icon.addEventListener("click", function() {
         navigator.clipboard.writeText(`${window.location.href}file/${id}`)
         popupText.innerHTML = "Copied"
@@ -124,7 +122,7 @@ function sidebarItemClick(itemId) {
         previouslyClickedItem.style.border = "none"
     }
     previouslyClickedItem = document.getElementById(itemId)
-    previouslyClickedItem.style.border = "1px solid rgba(61, 61, 134, 0.922)"
+    previouslyClickedItem.style.border = `1px solid ${primaryBlue}`
     context.id = itemId.split("-")[0]
     let info = container[context.id]
     context.mode = info.mode
@@ -200,6 +198,7 @@ newButton.addEventListener("click", function() {
     let sidebarItem = generateSidebarItem(inputId, "text", "")
     sidebarItemArray.push(sidebarItem)
     sidebar.appendChild(sidebarItem)
+    document.getElementById(inputId).focus()
     container[inputId] = {
         mode: "ace/mode/text", 
         value: "", 

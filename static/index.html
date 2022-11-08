@@ -6,11 +6,17 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="/assets/icon.png" type="image/x-icon">
-        <link rel="stylesheet" type="text/css" href="/styles/style.css">
+        
         <meta property="og:title" content="codebin">
         <meta property="og:description" content="edit and share multiple scripts on the go!">
         <meta property="og:image" content="/assets/icon.png">
         <meta property="og:url" content="https://codebin.deta.dev/">
+
+        <link rel="stylesheet" type="text/css" href="/styles/style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;400;900&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     </head>
     <body>
         <button id="save" style="display: none;"></button>
@@ -19,19 +25,19 @@
                 <div class="level-bar-inner" id="limit-bar"></div>
             </div>
             <header>
-                <h3>
+                <p>
                     <a href="https://github.com/jnsougata/codebin">codebin</a>
-                </h3>
+                </p>
                 <div class="box">
-                    <button id="new" style="padding: 6px 10px;">
-                        <img src="/assets/add.png" height="20" width="20">
+                    <button id="new">
+                        <i class="fa-solid fa-plus"></i>
                     </button>
-                    <button id="trash" style="padding: 6px 10px;">
-                        <img src="/assets/trash.png" height="20" width="20">
-                    </button>
-                    <button id="upload" style="padding: 6px 10px;">
-                        <img src="/assets/upload.png" height="20" width="20">
+                    <button id="upload">
+                        <i class="fa-solid fa-file-arrow-up"></i>
                         <input type="file" id="files" hidden>
+                    </button>
+                    <button id="trash">
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
             </header>
@@ -45,17 +51,17 @@
                 <div class="box">
                     <div class="left-group">
                         <div class="group-text-item">
-                            <img src="/assets/theme.png" height="11" width="11"> 
+                            <i class="fa-solid fa-brush"></i>
                             <p id="theme-mode" style="margin-left: 2px;">One Dark</p>
                         </div>
                         <div class="group-text-item" id="sync-mode" style="display: none;">
-                            <img src="/assets/check.png" height="11" width="11"> 
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
                             <p style="margin-left: 3px">saved</p>
                         </div>
                     </div>
                     <div class="right-group" style="justify-content: flex-end;">
                         <div class="group-text-item">
-                            <img src="/assets/link.png" height="12" width="12"> 
+                            <i class="fa-solid fa-share"></i>
                             <code id="link-to-file" style="margin-left: 2px;"></code>
                         </div>
                         <div class="group-text-item">
