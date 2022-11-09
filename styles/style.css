@@ -43,27 +43,6 @@ body {
     height: 50px;
 }
 
-.wrapper > .level-bar {
-    position: fixed;
-    margin-top: 5px;
-    width: 100%;
-    height: 50px;
-    display: flex;
-    justify-content: flex-start;
-    z-index: 5;
-}
-
-.wrapper > .level-bar > .level-bar-inner {
-    height: 100%;
-    width: 10%;
-    margin-top: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-    border-radius: 5px 5px 0 0;
-    transition: 0.5s;
-    background-color: rgba(228, 228, 255, 0.184);
-}
-
 header {
     width: 100%;
     height: 100%;
@@ -91,6 +70,16 @@ header > p > a {
     text-decoration: none;
     color: #096af2;
     font-weight: 500;
+}
+
+header > .level-bar {
+    position: fixed;
+    height: 50px;
+    width: 0;
+    border-radius: 5px 5px 0 0;
+    transition: 0.5s;
+    background-color: rgba(253, 253, 253, 0.196);
+    z-index: -1;
 }
 
 header > .box {
@@ -384,4 +373,5 @@ header > .box > button > i:hover {
     text-overflow: ellipsis;
     font-size: 16px;
     color: whitesmoke;
+    transition: 0.5s;
 }

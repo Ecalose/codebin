@@ -21,10 +21,9 @@
     <body>
         <button id="save" style="display: none;"></button>
         <div class="wrapper">
-            <div class="level-bar">
-                <div class="level-bar-inner" id="limit-bar"></div>
-            </div>
             <header>
+                <div class="level-bar" id="limit-bar">
+                </div>
                 <p>
                     <a href="https://github.com/jnsougata/codebin">codebin</a>
                 </p>
@@ -43,7 +42,7 @@
             </header>
         </div>
         <div class="container">
-            <div class="window"  ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
+            <div class="window">
                 <div class="sidebar" id="master-sidebar"></div>
                 <div class="content" id="editor"></div>
             </div>

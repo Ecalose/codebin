@@ -202,6 +202,14 @@ newButton.addEventListener("click", function() {
     sidebarItem.click()
 })
 
+let editorWindow = document.querySelector(".window")
+editorWindow.ondrop = (e) => {
+    dropHandler(e)
+}
+editorWindow.ondragover = (e) => {
+    e.preventDefault()
+}
+
 // file drop callback
 function dropHandler(ev) {
     ev.preventDefault();
