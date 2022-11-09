@@ -1,9 +1,9 @@
-var container = {}
 var editor = ace.edit("editor")
 editor.setReadOnly(true)
 var langMode = document.getElementById("lang-mode")
 let sidebar = document.getElementById("master-sidebar")
 let previouslyClickedItem = null
+let container = {}
 
 editor.setOptions({
     fontSize: "13pt",
@@ -23,7 +23,7 @@ function sidebarItemClick(id) {
     }
     let item = document.getElementById(id)
     previouslyClickedItem = item
-    item.style.border = "1px solid blue"
+    item.style.border = "1px solid #1c4ce4"
     let resolvedId = id.split("-")[0]
     let info = container[resolvedId]
     editor.setValue(info.value)
@@ -83,18 +83,12 @@ window.onload = function() {
     showCode(code)
 }
 
-copyCodeButton = document.getElementById("copy-code")
+let copyCodeButton = document.getElementById("copy-code")
 copyCodeButton.addEventListener("click", function() {
     text = editor.getValue()
     navigator.clipboard.writeText(text)
     .then(function() {
-        let popupText = document.getElementById("popup-text")
-        popupText.innerHTML = "Copied to Clipboard"
-        let modal = document.getElementById("popup")
-        modal.style.display = "flex"
-        setTimeout(function() {
-            modal.style.display = "none"
-        }, 900)
+        showToast("Snippet copied to clipboard", toastGreen)
     })
 })
 
@@ -112,3 +106,15 @@ themeButton.addEventListener("click", function() {
     }
     themeButton.innerHTML = themes[themeCounter].caption
 })
+
+let toast = document.querySelector(".toast")
+const toastGreen = "#27ab5a"
+const toastRed = "#c32c59"
+function showToast(innerText, color="#1c4ce4") {
+    toast.innerHTML = `<p>${innerText}</p>`
+    toast.style.backgroundColor = color
+    toast.style.display = "flex"
+    setTimeout(function() {
+        toast.style.display = "none"
+    }, 3000)
+}

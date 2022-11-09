@@ -62,7 +62,7 @@
                     <div class="right-group" style="justify-content: flex-end;">
                         <div class="group-text-item">
                             <i class="fa-solid fa-share"></i>
-                            <code id="link-to-file" style="margin-left: 2px;"></code>
+                            <p id="link-to-file" style="margin-left: 2px;"></p>
                         </div>
                         <div class="group-text-item">
                             <p id="lang-mode">TEXT</p>
@@ -71,12 +71,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal" tabindex="-1" id="popup">
-            <div class="content">
-                <div style="color:grey">
-                    <h3 id="popup-text">Copied</h3>
-                </div>
-            </div>
+        <div class="toast">
+            <p>copied to clipboard</p>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.js"></script>

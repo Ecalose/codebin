@@ -50,16 +50,18 @@ body {
     height: 50px;
     display: flex;
     justify-content: flex-start;
+    z-index: 5;
 }
 
 .wrapper > .level-bar > .level-bar-inner {
     height: 100%;
-    width: 0;
+    width: 10%;
     margin-top: 5px;
     margin-left: 10px;
     margin-right: 10px;
-    border-radius: 5px;
+    border-radius: 5px 5px 0 0;
     transition: 0.5s;
+    background-color: rgba(228, 228, 255, 0.184);
 }
 
 header {
@@ -130,7 +132,7 @@ header > .box > button > i:hover {
     height: 100%;
     display: flex;
     margin-right: 10px;
-    margin-top: 11px;
+    margin-top: 10px;
     padding: 10px;
     z-index: 0;
 }
@@ -289,7 +291,7 @@ header > .box > button > i:hover {
     }
 
     .window > .sidebar {
-        margin-top: 5px;
+        margin-top: 10px;
         margin-bottom: -10px;
         display: flex;
         flex-direction: row;
@@ -300,13 +302,11 @@ header > .box > button > i:hover {
     }
 
     .window > .sidebar > .item {
-        width: 70px;
+        width: 100px;
         min-width: 70px;
         height: 15px;
         margin: 5px;
         padding: 8px;
-        cursor: pointer;
-        background-color: var(--secondary-color);
     }
 
     .container > .bottombar {
@@ -328,7 +328,6 @@ header > .box > button > i:hover {
 
 }
 
-/* Modal and Ace Overrides*/
 .ace_mobile-menu {
     display: none;
 }
@@ -357,4 +356,32 @@ header > .box > button > i:hover {
     margin: auto;
     padding: 10px;
     border-radius: 20px;
+}
+
+.toast {
+    margin-top: 60px;
+    margin-right: 10px;
+    margin-left: auto;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 1;
+    right: 0;
+    top: 0;
+    width: 250px;
+    max-width: 400px;
+    height: 35px;
+    overflow: hidden;
+    background-color: #c32c59;
+    animation: popup 0.5s;
+}
+
+.toast > p {
+    padding: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 16px;
+    color: whitesmoke;
 }

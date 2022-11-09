@@ -2,14 +2,15 @@ var editor = ace.edit("editor");
 var modelist = ace.require("ace/ext/modelist");
 let syncModeElement = document.getElementById("sync-mode")
 let sidebar = document.getElementById("master-sidebar")
-let popup = document.getElementById("popup")
-let popupText = document.getElementById("popup-text")
+let toast = document.querySelector(".toast")
 let defaultId = null;
 let container = {}
 let sidebarItemArray = []
 let context = {id: null, mode: null}
 const maxFileSize = 400 * 1024
 const primaryBlue = "#1c4ce4"
+const toastGreen = "#27ab5a"
+const toastRed = "#c32c59"
 
 editor.setOptions({
     fontSize: "13pt",
@@ -37,14 +38,15 @@ function updateTotalSize() {
     let currentSize = encoder.encode(JSON.stringify(content)).length;
     let percentage = (currentSize / maxFileSize) * 100
     let limitBar = document.getElementById("limit-bar")
+    let header = document.querySelector("header")
     if (percentage > 100) {
+        header.style.backgroundColor = toastRed
         limitBar.style.width = "100%"
-        limitBar.style.backgroundColor = "rgba(208, 0, 76, 0.66)"
     } else if (percentage < 0.5) {
         limitBar.style.width = "0%"
     } else {
+        header.style.backgroundColor = primaryBlue
         limitBar.style.width = `${percentage.toFixed(2)}%`
-        limitBar.style.backgroundColor = "rgba(61, 61, 134, 0.622)"
     }
 }
 
@@ -81,11 +83,7 @@ function generateSidebarItem(id, mode, filename) {
     icon.className = "fa-solid fa-arrow-up-right-from-square"
     icon.addEventListener("click", function() {
         navigator.clipboard.writeText(`${window.location.href}file/${id}`)
-        popupText.innerHTML = "Copied"
-        popup.style.display = "flex"
-        setTimeout(function() {
-            popup.style.display = "none"
-        }, 1000)
+        showToast("File Link copied to clipboard", toastGreen)
     })
     sidebarItem.appendChild(langIcon)
     sidebarItem.appendChild(itemInput)
@@ -183,11 +181,7 @@ saveButton.addEventListener("click", function() {
             }
         })
     } else {
-        popupText.innerHTML = "Single filesize exceeded 400KB :("
-        popup.style.display = "flex"
-        setTimeout(function() {
-            popup.style.display = "none"
-        }, 2000)
+        showToast("File size exceeded 400KB", toastRed)
     }
 })
 
@@ -246,14 +240,7 @@ let linkToFile = document.getElementById("link-to-file")
 linkToFile.addEventListener("click", function() {
     saveButton.click()
     navigator.clipboard.writeText(linkToFile.innerHTML)
-    let fileLinkElement = document.getElementById("link-to-file")
-    fileLinkElement.style.color = "#00b0ff"
-    popupText.innerHTML = "Copied to clipboard :)"
-    popup.style.display = "flex"
-    setTimeout(function() {
-        fileLinkElement.style.color = "white"
-        popup.style.display = "none"
-    }, 1500)
+    showToast("Link copied to clipboard", toastGreen)
 })
 
 // listen for edit events
@@ -315,11 +302,7 @@ trashButton.addEventListener("click", function() {
             sidebarItemArray[index].click()
         }
     } else {
-        let h3 = document.getElementById("popup-text")
-        h3.innerHTML = "Can't delete default file"
-        let popup = document.getElementById("popup")
-        popup.style.display = "flex"
-        setTimeout(function() {popup.style.display = "none"} , 900)
+        showToast("cannot delete default file", "red")
     }
 })
 
@@ -352,3 +335,12 @@ let uploadButton = document.getElementById("upload")
 uploadButton.addEventListener("click", function() {
     filesElement.click()
 })
+
+function showToast(innerText, color="#1c4ce4") {
+    toast.innerHTML = `<p>${innerText}</p>`
+    toast.style.backgroundColor = color
+    toast.style.display = "flex"
+    setTimeout(function() {
+        toast.style.display = "none"
+    }, 3000)
+}
