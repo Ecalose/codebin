@@ -19,9 +19,36 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"])
 async def index(request: Request):
     return ContentResponse("./static/index.html", media_type="text/html")
 
-@app.get("/assets/{name}")
-async def file(name: str):
-    return ContentResponse(f"./assets/{name}", media_type="application/octet-stream")
+@app.get("/{code}")
+async def view():
+    return ContentResponse("./static/view.html", media_type="text/html")
+
+@app.get("/file/{code}")
+async def file():
+    return ContentResponse("./static/file.html", media_type="text/html")
+
+@app.get("/api/files/{code}")
+async def fetch(code: str):
+    fetched = app.db.get(code)
+    if not fetched:
+        return PlainTextResponse("not found", status_code=404)
+    return JSONResponse({fetched["parent"]: fetched})
+
+@app.get("/api/bins/{code}")
+async def fetch(request: Request, code: str):
+    fetched = app.db.fetch({"parent": code})
+    if not fetched:
+        return PlainTextResponse("not found", status_code=404)
+    return JSONResponse({item.pop("key"): item for item in fetched.items})
+
+@app.post("/api/bins/{code}")
+async def store(request: Request, code: str):
+    return JSONResponse(app.db.put(await request.json(), code))
+
+@app.delete("/api/bins/{code}")
+async def delete(code: str):
+    return app.db.delete(code)
+
 
 @app.get("/modes/{name}")
 async def file(name: str):
@@ -34,40 +61,6 @@ async def file(name: str):
 @app.get("/styles/{name}")
 async def file(name: str):
     return ContentResponse(f"./styles/{name}", media_type="text/css")
-
-@app.get("/{code}")
-async def view(request: Request, code: str):
-    return ContentResponse("./static/view.html", media_type="text/html")
-
-@app.get("/file/{code}")
-async def file(request: Request, code: str):
-    return ContentResponse("./static/file.html", media_type="text/html")
-
-@app.get("/base/file/{code}")
-async def fetch(request: Request, code: str):
-    fetched = app.db.get(code)
-    if not fetched:
-        return PlainTextResponse("File not found!", status_code=404)
-    payload = {fetched["parent"]: fetched}
-    return JSONResponse(payload)
-
-@app.get("/base/{code}")
-async def fetch(request: Request, code: str):
-    fetched = app.db.fetch({"parent": code})
-    if not fetched:
-        return PlainTextResponse("File not found!", status_code=404)
-    payload = {item.pop("key"): item for item in fetched.items}
-    return JSONResponse(payload)
-
-@app.post("/base/{code}")
-async def store(request: Request, code: str):
-    app.db.put(await request.json(), code)
-    return PlainTextResponse(code)
-
-@app.delete("/base/{code}")
-async def delete(request: Request, code: str):
-    app.db.delete(code)
-    return PlainTextResponse("done!")
 
 
 if __name__ == "__main__":

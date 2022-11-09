@@ -163,7 +163,7 @@ saveButton.addEventListener("click", function() {
     let bodyString = JSON.stringify(container[context.id])
     let encoder = new TextEncoder();
     if (encoder.encode(bodyString).length < maxFileSize) {
-        fetch(`/base/${context.id}`, {method: "POST", body: bodyString})
+        fetch(`/api/bins/${context.id}`, {method: "POST", body: bodyString})
         .then(function(response) {
             if (response.status == 200) {
                 syncModeElement.style.display = "flex"
@@ -288,7 +288,7 @@ trashButton.addEventListener("click", function() {
             if (index == sidebarItemArray.length) {
                 index--
             }
-            fetch(`/base/${context.id}`, {method: "DELETE"})
+            fetch(`/api/bins/${context.id}`, {method: "DELETE"})
             sidebarItemArray[index].click()
         }
     } else {

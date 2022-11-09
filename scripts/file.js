@@ -1,3 +1,4 @@
+let container = {}
 var editor = ace.edit("editor")
 editor.setReadOnly(true)
 var langMode = document.getElementById("lang-mode")
@@ -31,7 +32,7 @@ function sidebarItemClick(id) {
 }
 
 function showCode(code) {
-    fetch(`/base/file/${code}`)
+    fetch(`/api/files/${code}`)
     .then(function(response) {
         if (response.status == 200) {
             return response.json()
@@ -75,7 +76,7 @@ function showCode(code) {
 window.onload = function() {
     let code = window.location.pathname.split("/")[2]
     let title = document.getElementsByTagName("title")[0]
-    title.innerHTML = `file/${code}`
+    title.innerHTML = `codebin/file/${code}`
     showCode(code)
 }
 

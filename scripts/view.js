@@ -32,7 +32,7 @@ function sidebarItemClick(id) {
 }
 
 function showCode(code) {
-    fetch(`/base/${code}`)
+    fetch(`/api/bins/${code}`)
     .then(function(response) {
         if (response.status == 200) {
             return response.json()
