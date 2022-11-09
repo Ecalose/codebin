@@ -1,14 +1,13 @@
-# codebin
-Code sharing utility built on [Ace](https://ace.c9.io/) & [Deta](https://deta.sh/)
-# Features:
+# Codebin
+A code editing & sharing utility on [Deta Cloud](https://deta.sh/)
+# Features
 - Syntax hilighting
-- Multiple themes
+- Multiple cool themes
 - Loose hints as you type
 - Auto save, file navigation and deletion
 - Drag and drop support for multiple files
 - Single session code changes auto synchronization
-#
-May be another full fledge code editor someday
-![image](https://user-images.githubusercontent.com/53375272/194165063-6bd2adb7-ce66-4658-b401-c8d6822cd4f3.png)
-
-Thanks to [creators on flaticon](https://www.flaticon.com/) for some of the cool icons!
+# Get your own
+[![Deploy](https://button.deta.dev/1/svg)](https://github.com/jnsougata/codebin)
+# Preview
+![image](https://user-images.githubusercontent.com/53375272/200767149-16d7180f-4ebc-4564-828a-601ff6b2f929.png)
