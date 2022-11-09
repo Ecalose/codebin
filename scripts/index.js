@@ -20,18 +20,15 @@ editor.setOptions({
 });
 editor.setTheme("ace/theme/one_dark");
 
-// mode to uppercase ext
 function modeToLabel(mode) {
     return String(mode).split("/")[2]
 }
 
-// updating language mode
 function updateLangMode(aceMode) {
     let langMode = document.getElementById("lang-mode")
     langMode.innerHTML = modeToLabel(aceMode).toUpperCase()
 }
 
-// check and update total size
 function updateTotalSize() {
     let content = container[context.id]
     const encoder = new TextEncoder();
@@ -50,17 +47,14 @@ function updateTotalSize() {
     }
 }
 
-// generate random id
 function generateRandomId() {
     return crypto.getRandomValues(new Uint32Array(1))[0].toString(16)
 }
 
-// resolve icon source
 function resolveIconSource(mode) {
     return `/modes/${mode.toLowerCase()}.png`
 }
 
-// generate sidebar item
 function generateSidebarItem(id, mode, filename) {
     let sidebarItem = document.createElement("div")
     sidebarItem.className = "item"
@@ -91,7 +85,6 @@ function generateSidebarItem(id, mode, filename) {
     return sidebarItem
 }
 
-// mode from filename
 let nameInputTimer = null;
 function fileNameUpdate(updatedName, id) {
     if (nameInputTimer) {
@@ -113,7 +106,6 @@ function fileNameUpdate(updatedName, id) {
     }, 1000)
 }
 
-// handle sidebar item click
 let previouslyClickedItem = null;
 function sidebarItemClick(itemId) {
     if (previouslyClickedItem != null) {
@@ -131,7 +123,6 @@ function sidebarItemClick(itemId) {
     saveButton.click()
 }
 
-// loading tasks
 let urlHash = ""
 window.onload = function() {
     urlHash = generateRandomId()
@@ -151,7 +142,6 @@ window.onload = function() {
     sidebarItem.click()
 }
 
-// theme button callback
 var themeCounter = 0
 let themeButton = document.getElementById("theme-mode")
 themeButton.addEventListener("click", function() {
@@ -167,7 +157,6 @@ themeButton.addEventListener("click", function() {
     themeButton.innerHTML = themes[themeCounter].caption
 })
 
-// save button callback
 let saveButton = document.getElementById("save")
 saveButton.addEventListener("click", function() {
     syncModeElement.style.display = "none"
@@ -185,7 +174,6 @@ saveButton.addEventListener("click", function() {
     }
 })
 
-// new button callback
 let newButton = document.getElementById("new")
 newButton.addEventListener("click", function() {
     let inputId = generateRandomId()
@@ -202,15 +190,6 @@ newButton.addEventListener("click", function() {
     sidebarItem.click()
 })
 
-let editorWindow = document.querySelector(".window")
-editorWindow.ondrop = (e) => {
-    dropHandler(e)
-}
-editorWindow.ondragover = (e) => {
-    e.preventDefault()
-}
-
-// file drop callback
 function dropHandler(ev) {
     ev.preventDefault();
     if (ev.dataTransfer.items) {
@@ -238,9 +217,12 @@ function dropHandler(ev) {
     }
 }
 
-// override default drag event
-function dragOverHandler(ev) {
-    ev.preventDefault();
+let editorWindow = document.querySelector(".window")
+editorWindow.ondrop = (e) => {
+    dropHandler(e)
+}
+editorWindow.ondragover = (e) => {
+    e.preventDefault()
 }
 
 // bottom bar link callback
