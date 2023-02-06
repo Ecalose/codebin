@@ -131,6 +131,7 @@ header > .box > button > i:hover {
     cursor: pointer;
     background-color: rgba(254, 254, 255, 0.075);
     margin-bottom: 5px;
+    padding-left: 10px;
 }
 
 .editor > .sidebar > .item:hover {
