@@ -82,7 +82,7 @@ function showCode(code) {
 window.onload = () => {
     let code = window.location.pathname.split("/").pop()
     let title = document.querySelector("title")
-    title.innerHTML = `file/${code}`
+    title.innerHTML = `File - ${code}`
     showCode(code)
     themeButton.innerHTML = "<i class='fas fa-palette'></i> One Dark"
 }

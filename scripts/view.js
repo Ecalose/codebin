@@ -82,7 +82,7 @@ function showCode(code) {
 window.onload = () => {
     let code = window.location.pathname.replace("/", "")
     let title = document.getElementsByTagName("title")[0]
-    title.innerHTML = `bin/${code}`
+    title.innerHTML = `Bin - ${code}`
     showCode(code)
     themeButton.innerHTML = "<i class='fas fa-palette'></i> One Dark"
 }
