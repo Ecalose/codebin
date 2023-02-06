@@ -1,11 +1,11 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 :root {
-    --primary-color: #23272e;
-    --secondary-color: #24428055;
+    --primary-color: #1e2227;
     --primary-blue: #1c4ce4;
 }
 
@@ -15,13 +15,12 @@
 }
   
 ::-webkit-scrollbar-track {
-    background: var(--secondary-color);
+    background: var(--primary-color);
 }
   
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: var(--secondary-color);
+    background: #ffffff2a;
 }
   
 ::-webkit-scrollbar-thumb:hover {
@@ -30,32 +29,30 @@
 
 body {
     background-color: var(--primary-color);
-    font-family: 'Prompt', sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
-.wrapper {
-    position: fixed;
+.container {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--primary-color);
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
-    margin-left: auto;
-    margin-right: auto;
-    width: calc(100% - 20px);
-    height: 50px;
+    overflow: hidden;
+    padding: 10px;
 }
 
 header {
     width: 100%;
-    height: 100%;
-    background-color: #1c4ce4;
+    height: 50px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    z-index: 1;
+    justify-content: space-between;
     color: white;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 10px;
     border-radius: 5px 5px 0 0;
+    background-color: var(--primary-blue);
 }
 
 header > p {
@@ -63,23 +60,13 @@ header > p {
     padding: 3px 6px;
     border-radius: 5px;
     cursor: pointer;
-    background-color: whitesmoke;
+    font-size: larger;
+    cursor: pointer;
 }
 
 header > p > a {
     text-decoration: none;
-    color: #096af2;
-    font-weight: 500;
-}
-
-header > .level-bar {
-    position: fixed;
-    height: 50px;
-    width: 0;
-    border-radius: 5px 5px 0 0;
-    transition: 0.5s;
-    background-color: rgba(253, 253, 253, 0.196);
-    z-index: -1;
+    color: white;
 }
 
 header > .box {
@@ -91,11 +78,10 @@ header > .box {
 }
 
 header > .box > button {
-    background-color: transparent;
     border: none;
     margin: 5px;
     cursor: pointer;
-    white-space: nowrap;
+    background-color: transparent;
 }
 
 header > .box > button > i {
@@ -103,73 +89,74 @@ header > .box > button > i {
     border-radius: 5px;
     font-size: 15px;
     padding: 11px 12px;
-    background-color: #2454f3;
+    background-color: #ffffff15;
 }
 
 header > .box > button > i:hover {
-    background-color: rgb(103, 103, 249);
+    background-color: rgba(255, 255, 255, 0.219);
 }
 
-.window {
-    height: 100%;
-    width: 100%;
-    display: flex;
-}
-
-.window > .content {
+.editor {
     width: 100%;
     height: 100%;
     display: flex;
-    margin-right: 10px;
-    margin-top: 10px;
-    padding: 10px;
-    z-index: 0;
-}
-
-.window > .sidebar {
-    width: 150px;
-    height: 100%;
-    display: flex;
-    margin-left: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #1e2227;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+}
+.editor > .renderer {
+    width: 100%;
+    height: 100%;
+}
+
+.editor > .sidebar {
+    width: 200px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
     justify-content: flex-start;
     overflow-y: auto;
     overflow-x: hidden;
+    background-color: #23272e;
 }
 
-.window > .sidebar > .item {
-    width: calc(100% - 20px);
-    height: 14px;
+.editor > .sidebar > .item {
+    width: 100%;
+    height: 35px;
     display: flex;
-    justify-content: flex-start;
+    color: white;
+    justify-content: space-between;
     align-items: center;
-    margin: 5px;
-    padding: 8px;
+    padding: 5px;
     cursor: pointer;
-    background-color: rgba(39, 39, 44, 0.663);
+    background-color: rgba(254, 254, 255, 0.075);
+    margin-bottom: 5px;
 }
 
-.window > .sidebar > .item:hover {
-    background-color: rgba(39, 39, 44, 0.663)
+.editor > .sidebar > .item:hover {
+    background-color: rgba(255, 255, 255, 0.212)
 }
 
-.window > .sidebar > .item > img {
+.editor > .sidebar > .item > img {
     width: 15px;
     height: 15px;
 }
+.editor > .sidebar > .item > p {
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+}
 
-.window > .sidebar > .item > i {
-    font-size: 10px;
-    color: var(--primary-blue);
+.editor > .sidebar > .item > i {
+    font-size: 12px;
+    padding: 10px;
+    color: rgba(255, 255, 255, 0.342);
 }
 
 
-.window > .sidebar > .item > input[type="text"] {
+.editor > .sidebar > .item > input[type="text"] {
     width: calc(100% - 20px);
     height: 100%;
     background-color: transparent;
@@ -186,135 +173,42 @@ header > .box > button > i:hover {
     font-family: 'Prompt', sans-serif;
 }
 
-.container {
+footer {
     width: 100%;
-    height: calc(100% - 118px);
+    height: 40px;
     display: flex;
+    align-items: center;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 50px;
-    position: fixed;
-}
-
-.container > .bottombar {
-    bottom: 0;
-    position: fixed;
-    width: 100%;
-    height: 30px;
-    background-color: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.container > .bottombar > .box {
-    width: 100%;
-    height: 100%;
-    background-color: #1c4ce4;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: var(--primary-blue);
+    color: white;
     border-radius: 0 0 5px 5px;
-    margin: 10px;
+    padding-right: 5px;
+    padding-right: 5px;
+    overflow-x: auto;
 }
 
-.container > .bottombar > .box > .left-group {
-    width: 40%;
-    height: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin-left: 2px;
-}
-
-.container > .bottombar > .box > .right-group {
-    width: max-content;
-    height: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-right: 2px;
-}
-
-.group-text-item {
-    margin: 1px;
-    font-size: 11px;
+footer > i {
+    font-size: 12px;
+    padding: 10px;
     color: white;
-    padding: 5px 10px;
     border-radius: 5px;
-    background-color: #4972fa;
-    align-items: center;
-    cursor: pointer;
+}
+footer > .box {
+    width: 100%;
+    height: 100%;
     display: flex;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    align-items: center;
+    justify-content: flex-start;
 }
-
-.group-text-item > i {
-    margin-right: 3px;
+footer > .box > .text {
+    font-size: 12px;
     color: white;
-}
-
-
-@media screen and (max-width: 600px) {
-
-    ::-webkit-scrollbar {
-        display: none;
-    }
-
-    .container {
-        width: calc(100% - 40px);
-        height: calc(100% - 90px);
-    }
-
-    .window {
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .window > .content {
-        margin-left: 10px;
-    }
-
-    .window > .sidebar {
-        margin-top: 10px;
-        margin-bottom: -10px;
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        height: fit-content;
-        overflow-y: hidden;
-        overflow-x: auto;
-    }
-
-    .window > .sidebar > .item {
-        width: 100px;
-        min-width: 70px;
-        height: 15px;
-        margin: 5px;
-        padding: 8px;
-    }
-
-    .container > .bottombar {
-        left: 0;
-        width: 100%;
-        height: 20px;
-        margin-bottom: 15px;
-        position: fixed;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .container > .bottombar > .box {
-        padding: 5px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        width: 100%;
-    }
-
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    margin: 5px;
+    background-color: rgba(255, 255, 255, 0.158);
 }
 
 .ace_mobile-menu {
@@ -322,6 +216,8 @@ header > .box > button > i:hover {
 }
 
 .toast {
+    top: 0;
+    right: 0;
     margin-top: 60px;
     margin-right: 10px;
     margin-left: auto;
@@ -329,15 +225,13 @@ header > .box > button > i:hover {
     align-items: center;
     justify-content: center;
     position: fixed;
-    z-index: 1;
-    right: 0;
-    top: 0;
     width: 250px;
     max-width: 400px;
     height: 35px;
     overflow: hidden;
     background-color: #c32c59;
     animation: popup 0.5s;
+    z-index: 1000 !important;
 }
 
 .toast > p {

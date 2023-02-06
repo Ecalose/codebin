@@ -6,24 +6,20 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="/modes/icon.png" type="image/x-icon">
-        
         <meta property="og:title" content="codebin">
         <meta property="og:description" content="edit and share multiple scripts on the go!">
         <meta property="og:image" content="/modes/icon.png">
         <meta property="og:url" content="https://codebin.deta.dev/">
-
         <link rel="stylesheet" type="text/css" href="/styles/style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-        <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;400;900&amp;display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     </head>
     <body>
-        <button id="save" style="display: none;"></button>
-        <div class="wrapper">
+        <div class="container">
+            <button id="save" style="display: none;"></button>
             <header>
-                <div class="level-bar" id="limit-bar">
-                </div>
                 <p>
                     <a href="https://github.com/jnsougata/codebin">codebin</a>
                 </p>
@@ -32,7 +28,7 @@
                         <i class="fa-solid fa-plus"></i>
                     </button>
                     <button id="upload">
-                        <i class="fa-solid fa-file-arrow-up"></i>
+                        <i class="fa-solid fa-paperclip"></i>
                         <input type="file" id="files" hidden>
                     </button>
                     <button id="trash">
@@ -40,35 +36,20 @@
                     </button>
                 </div>
             </header>
-        </div>
-        <div class="container">
-            <div class="window">
-                <div class="sidebar" id="master-sidebar"></div>
-                <div class="content" id="editor"></div>
+            <div class="editor">
+                <div class="sidebar"></div>
+                <div class="renderer" id="main"></div>
             </div>
-            <div class="bottombar">
-                <div class="box">
-                    <div class="left-group">
-                        <div class="group-text-item">
-                            <i class="fa-solid fa-brush"></i>
-                            <p id="theme-mode" style="margin-left: 2px;">One Dark</p>
-                        </div>
-                        <div class="group-text-item" id="sync-mode" style="display: none;">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <p style="margin-left: 3px">saved</p>
-                        </div>
-                    </div>
-                    <div class="right-group" style="justify-content: flex-end;">
-                        <div class="group-text-item">
-                            <i class="fa-solid fa-share"></i>
-                            <p id="link-to-file" style="margin-left: 2px;"></p>
-                        </div>
-                        <div class="group-text-item">
-                            <p id="lang-mode">TEXT</p>
-                        </div>
-                    </div>
+            <footer>
+                <div class="box" style="justify-content: flex-start;">
+                    <div class="text" id="editor-theme"></div>
+                    <div class="text" id="editor-status"><i class="fa-solid fa-check"></i> saved</div>
                 </div>
-            </div>
+                <div class="box" style="justify-content: flex-end;">
+                    <div class="text" id="edtior-link"></div>
+                    <div class="text" id="editor-mode"></div>
+                </div>
+            </footer>
         </div>
         <div class="toast">
             <p>copied to clipboard</p>

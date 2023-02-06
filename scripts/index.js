@@ -1,10 +1,14 @@
-var editor = ace.edit("editor");
+var editor = ace.edit("main");
 var modelist = ace.require("ace/ext/modelist");
-let syncModeElement = document.getElementById("sync-mode")
-let sidebar = document.getElementById("master-sidebar")
+let editorStatusElem = document.querySelector("#editor-status")
+let editorLinkElem = document.querySelector("#editor-link")
+let editorModeElem = document.querySelector("#editor-mode")
+let editorThemeElem = document.querySelector("#editor-theme")
+let sidebar = document.querySelector(".sidebar")
 let toast = document.querySelector(".toast")
 let defaultId = null;
 let container = {}
+let urlHash = ""
 let sidebarItemArray = []
 let context = {id: null, mode: null}
 const maxFileSize = 400 * 1024
@@ -20,31 +24,32 @@ editor.setOptions({
 });
 editor.setTheme("ace/theme/one_dark");
 
+
+window.addEventListener("DOMContentLoaded", () => {
+    urlHash = generateRandomId()
+    context.id = generateRandomId()
+    context.mode = "ace/mode/text"
+    defaultId = context.id
+    container[context.id] = {
+        mode: context.mode, 
+        value: "", 
+        name: "untitled", 
+        parent: urlHash
+    }
+    let sidebarItem = generateSidebarItem(context.id, modeToLabel(context.mode), "")
+    sidebar.appendChild(sidebarItem)
+    sidebarItemArray.push(sidebarItem)
+    editorThemeElem.innerHTML = `<i class="fa-solid fa-palette"></i> One Dark`;
+    editorLinkElem.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ${window.location.href + urlHash}`;
+    sidebarItem.click()
+});
+
 function modeToLabel(mode) {
     return String(mode).split("/")[2]
 }
 
-function updateLangMode(aceMode) {
-    let langMode = document.getElementById("lang-mode")
-    langMode.innerHTML = modeToLabel(aceMode).toUpperCase()
-}
-
-function updateTotalSize() {
-    let content = container[context.id]
-    const encoder = new TextEncoder();
-    let currentSize = encoder.encode(JSON.stringify(content)).length;
-    let percentage = (currentSize / maxFileSize) * 100
-    let limitBar = document.getElementById("limit-bar")
-    let header = document.querySelector("header")
-    if (percentage > 100) {
-        header.style.backgroundColor = toastRed
-        limitBar.style.width = "100%"
-    } else if (percentage < 0.5) {
-        limitBar.style.width = "0%"
-    } else {
-        header.style.backgroundColor = primaryBlue
-        limitBar.style.width = `${percentage.toFixed(2)}%`
-    }
+function updateLangMode(mode) {
+    editorModeElem.innerHTML = `<i class="fa-solid fa-code-commit"> ${modeToLabel(mode).toUpperCase()}`;
 }
 
 function generateRandomId() {
@@ -58,51 +63,54 @@ function resolveIconSource(mode) {
 function generateSidebarItem(id, mode, filename) {
     let sidebarItem = document.createElement("div")
     sidebarItem.className = "item"
-    sidebarItem.id = `${id}-item`
+    sidebarItem.id = `item-${id}`;
     sidebarItem.addEventListener("click", function() {
-        sidebarItemClick(`${id}-item`)
+        sidebarItemClick(`item-${id}`)
     })
     let langIcon = document.createElement("img")
-    langIcon.id = `${id}-icon`
+    langIcon.id = `icon-${id}`
     langIcon.src = resolveIconSource(mode)
-    let itemInput = document.createElement("input")
-    itemInput.id = id
-    itemInput.placeholder = "untitled"
-    itemInput.type = "text"
-    itemInput.value = filename
-    itemInput.addEventListener("input", function() {
-        fileNameUpdate(itemInput.value, itemInput.id)
+    let filenameElem = document.createElement("p")
+    filenameElem.id = id
+    filenameElem.placeholder = "untitled"
+    filenameElem.type = "text"
+    filenameElem.value = filename
+    filenameElem.contentEditable = true
+    filenameElem.spellcheck = false
+    filenameElem.style.outline = "none"
+    filenameElem.addEventListener("input", function() {
+        fileNameUpdate(filenameElem.value, filenameElem.id)
     })
     let icon = document.createElement("i")
-    icon.className = "fa-solid fa-arrow-up-right-from-square"
+    icon.className = "fa-solid fa-paper-plane"
     icon.addEventListener("click", function() {
         navigator.clipboard.writeText(`${window.location.href}file/${id}`)
         showToast("File Link copied to clipboard", toastGreen)
     })
     sidebarItem.appendChild(langIcon)
-    sidebarItem.appendChild(itemInput)
+    sidebarItem.appendChild(filenameElem)
     sidebarItem.appendChild(icon)
     return sidebarItem
 }
 
 let nameInputTimer = null;
-function fileNameUpdate(updatedName, id) {
+function fileNameUpdate(name, id) {
     if (nameInputTimer) {
         clearTimeout(nameInputTimer)
     }
     nameInputTimer = setTimeout(function() {
-        syncModeElement.style.display = "none"
-        var mode = modelist.getModeForPath(updatedName).mode;
+        editorStatusElem.style.display = "none"
+        var mode = modelist.getModeForPath(name).mode;
         editor.session.setMode(mode);
         updateLangMode(mode)
         container[id].mode = mode
-        container[id].name = updatedName
+        container[id].name = name
         context.mode = mode
         context.id = id
-        let icon = document.getElementById(`${id}-icon`)
+        let icon = document.getElementById(`icon-${id}`)
         icon.src = resolveIconSource(modeToLabel(mode))
         saveButton.click()
-        syncModeElement.style.display = "flex"
+        editorStatusElem.style.display = "flex"
     }, 1000)
 }
 
@@ -112,39 +120,18 @@ function sidebarItemClick(itemId) {
         previouslyClickedItem.style.border = "none"
     }
     previouslyClickedItem = document.getElementById(itemId)
-    previouslyClickedItem.style.border = `1px solid ${primaryBlue}`
+    previouslyClickedItem.style.border = `1px solid rgba(245, 222, 179, 0.095)`
     context.id = itemId.split("-")[0]
     let info = container[context.id]
     context.mode = info.mode
     editor.session.setMode(info.mode)
     updateLangMode(info.mode)
     editor.setValue(info.value)
-    updateTotalSize()
     saveButton.click()
 }
 
-let urlHash = ""
-window.onload = function() {
-    urlHash = generateRandomId()
-    context.id = generateRandomId()
-    context.mode = "ace/mode/text"
-    defaultId = context.id
-    document.getElementById("link-to-file").innerHTML = window.location.href + urlHash
-    container[context.id] = {
-        mode: context.mode, 
-        value: "", 
-        name: "untitled", 
-        parent: urlHash
-    }
-    let sidebarItem = generateSidebarItem(context.id, modeToLabel(context.mode), "")
-    sidebar.appendChild(sidebarItem)
-    sidebarItemArray.push(sidebarItem)
-    sidebarItem.click()
-}
-
 var themeCounter = 0
-let themeButton = document.getElementById("theme-mode")
-themeButton.addEventListener("click", function() {
+editorThemeElem.addEventListener("click", function() {
     var themes = ace.require("ace/ext/themelist").themes
     themes.reverse()
     let th = themes[themeCounter].theme
@@ -154,19 +141,19 @@ themeButton.addEventListener("click", function() {
     } else {
         themeCounter++
     }
-    themeButton.innerHTML = themes[themeCounter].caption
+    editorThemeElem.innerHTML = `<i class="fa-solid fa-palette"></i> ${themes[themeCounter].caption}`
 })
 
 let saveButton = document.getElementById("save")
 saveButton.addEventListener("click", function() {
-    syncModeElement.style.display = "none"
+    editorStatusElem.style.display = "none"
     let bodyString = JSON.stringify(container[context.id])
     let encoder = new TextEncoder();
     if (encoder.encode(bodyString).length < maxFileSize) {
         fetch(`/api/bins/${context.id}`, {method: "POST", body: bodyString})
         .then(function(response) {
             if (response.status == 200) {
-                syncModeElement.style.display = "flex"
+                editorStatusElem.style.display = "flex"
             }
         })
     } else {
@@ -217,7 +204,7 @@ function dropHandler(ev) {
     }
 }
 
-let editorWindow = document.querySelector(".window")
+let editorWindow = document.querySelector(".editor")
 editorWindow.ondrop = (e) => {
     dropHandler(e)
 }
@@ -226,10 +213,9 @@ editorWindow.ondragover = (e) => {
 }
 
 // bottom bar link callback
-let linkToFile = document.getElementById("link-to-file")
-linkToFile.addEventListener("click", function() {
+editorLinkElem.addEventListener("click", () => {
     saveButton.click()
-    navigator.clipboard.writeText(linkToFile.innerHTML)
+    navigator.clipboard.writeText(linkToFile.innerText)
     showToast("Link copied to clipboard", toastGreen)
 })
 
@@ -237,7 +223,7 @@ linkToFile.addEventListener("click", function() {
 let autosaveTimer = null;
 let editorTextInput = document.getElementsByClassName("ace_text-input")[0]
 editorTextInput.addEventListener("keydown", function(e) {
-    syncModeElement.style.display = "none"
+    editorStatusElem.style.display = "none"
     if (autosaveTimer) {
         clearTimeout(autosaveTimer);
     }
