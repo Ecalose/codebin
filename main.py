@@ -29,10 +29,7 @@ async def file():
 
 @app.get("/api/files/{code}")
 async def fetch(code: str):
-    fetched = app.db.get(code)
-    if not fetched:
-        return PlainTextResponse("not found", status_code=404)
-    return JSONResponse({fetched["parent"]: fetched})
+    return JSONResponse([app.db.get(code)])
 
 @app.get("/api/bins/{code}")
 async def fetch(request: Request, code: str):

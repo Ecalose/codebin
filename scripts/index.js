@@ -97,7 +97,7 @@ function newFile(file) {
             file.mode = mode
             icon.src = modeToIcon(modeToLabel(mode))
             saveButton.click()
-            editorStatusElem.style.display = "flex"
+            editorStatusElem.style.display = "block"
         }, 1000)
     })
     let share = document.createElement("i")
