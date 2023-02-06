@@ -37,9 +37,13 @@ async def fetch(code: str):
 @app.get("/api/bins/{code}")
 async def fetch(request: Request, code: str):
     fetched = app.db.fetch({"parent": code})
-    if not fetched:
-        return PlainTextResponse("not found", status_code=404)
-    return JSONResponse({item.pop("key"): item for item in fetched.items})
+    last = fetched.last
+    items = fetched.items
+    while fetched.last:
+        fetched = app.db.fetch({"parent": code}, last=last)
+        items += fetched.items
+        last = fetched.last
+    return JSONResponse(fetched.items)
 
 @app.post("/api/bins/{code}")
 async def store(request: Request, code: str):

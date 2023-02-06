@@ -58,6 +58,7 @@ function modeToIcon(mode) {
 let nameInputTimer = null;
 let previouslyClickedItem = null;
 function newFile(file) {
+    file.parent = globalBinId
     let sidebarItem = document.createElement("div")
     sidebarItem.className = "item"
     sidebarItem.id = `item-${file.id}`;
@@ -98,7 +99,6 @@ function newFile(file) {
             saveButton.click()
             editorStatusElem.style.display = "flex"
         }, 1000)
-        fileNameUpdate(name.innerHTML, name.id)
     })
     let share = document.createElement("i")
     share.className = "fa-solid fa-paper-plane"
@@ -198,14 +198,13 @@ editorLinkElem.addEventListener("click", () => {
 // listen for edit events
 let autosaveTimer = null;
 let editorTextInput = document.getElementsByClassName("ace_text-input")[0]
-editorTextInput.addEventListener("keydown", function(e) {
+editorTextInput.addEventListener("keydown", (e) => {
     editorStatusElem.style.display = "none"
     if (autosaveTimer) {
         clearTimeout(autosaveTimer);
     }
     autosaveTimer = setTimeout(function() {
-        container[globalContextFile.id].value = editor.getValue() 
-        updateTotalSize()
+        globalContextFile.value = editor.getValue() 
         saveButton.click()
     }, 1000);
 })
